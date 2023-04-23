@@ -9,7 +9,7 @@ const Course = () => {
   const [mobileDataEnabled, setMobileDataEnabled] = React.useState(false);
   const [locationEnabled, setLocationEnabled] = React.useState(false);
   const [batterySaverEnabled, setBatterySaverEnabled] = React.useState(false);
-  const [sms,setSMSEnabled] = React.useState(false);
+  // const [sms,setSMSEnabled] = React.useState(false);
   const [url,setURLEnabled] = React.useState(false);
   const [upi,setUPIEnabled] = React.useState(false);
   const [bitcoin,setBitcoinEnabled] = React.useState(false);
@@ -39,9 +39,9 @@ const Course = () => {
     setBatterySaverEnabled(!batterySaverEnabled);
   };
 
-  const toggleSMS = () =>{
-    setSMSEnabled(!sms)
-  }
+  // const toggleSMS = () =>{
+  //   setSMSEnabled(!sms)
+  // }
 
   const toggleURL = () =>{
     setURLEnabled(!url)
@@ -109,8 +109,8 @@ const Course = () => {
             <Icon name="comment" size={24} style={styles.icon} />
             <Text style={styles.optionText}>SMS Headers & Templates</Text>
             <Switch
-              value={sms}
-              onValueChange={toggleSMS}
+              value={batterySaverEnabled}
+              onValueChange={toggleBatterySaver}
             />
           </View>
           {/* URL Links */}
