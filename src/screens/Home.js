@@ -18,7 +18,7 @@ const Home = (props) => {
         textDecorationLine:"underline",
         fontWeight:500,
         marginTop:5,
-        fontStyle:"italic"}]}>{props.channelName} </Text>
+        fontStyle:"italic"}]}>APP BY TEAM BUG-BYTE</Text>
         <Text style={{
           fontFamily:'Roboto',
           fontSize:20,

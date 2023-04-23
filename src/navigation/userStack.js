@@ -1,31 +1,27 @@
 import { StyleSheet, Text, View,Image,ScrollView } from 'react-native';
 import React from 'react';
-import Home from './src/screens/Home';
+import Home from '../screens/Home';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import About from './src/screens/About';
-import Contact from './src/screens/Contact';
-import Course from './src/screens/Course';
-import UserData from './src/screens/UserData';
-import News from './src/screens/News';
-// import WelcomeScreen from './src/screens/Welcome';
-export default function App() {
+
+import News from '../screens/News'
+import About from '../screens/About'
+import Contact from '../screens/Contact'
+import UserData from '../screens/UserData'
+import Course from '../screens/Course'
+export default function UserStack() {
   const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
     <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home"component={Home}
-      options={{
-        headerShown:false
-      }}
-      ></Stack.Screen>
-      {/* <Stack.Screen name="Home"
+      {/* <Stack.Screen name="Home"component={Home}></Stack.Screen> */}
+      <Stack.Screen name="Home"
       options={{
         headerShown:false,
       }}>
         {(props) => <Home {...props} channelName={"app by team Bug-Byte"}
         />}
-      </Stack.Screen> */}
+      </Stack.Screen>
 
       {/* Course Screen === Settings*/}
       <Stack.Screen name="Settings" component={Course}
@@ -83,17 +79,3 @@ export default function App() {
 const styles = StyleSheet.create({
   
 });
-
-
-// import React from "react";
-// import './src/config/firebase'
-// import RootNavigation from "./src/navigation/index";
-// import { registerRootComponent } from "expo";
-
-// function App(){
-//   return (
-//     <RootNavigation/>
-//   )
-// }
-
-// export default registerRootComponent(App)
