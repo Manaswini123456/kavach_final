@@ -9,38 +9,38 @@ const Menu = () => {
       <TouchableOpacity style={styles.buttonStyle}
       
       onPress={() =>navigation.navigate("Settings")}>
-        <Text style={styles.textstyle}>Settings</Text>
         <Image
-        style={styles.iconstyle} source={{uri:"https://cdn-icons-png.flaticon.com/512/900/900834.png"}}/>
+        style={[styles.iconstyle , {position:"relative" , left:10}]} source={require("../../assets/settingIcon.png")}/>
+        <Text style={styles.textstyle}>Settings</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.buttonStyle}
       
       onPress={() =>navigation.navigate("News")}>
-        <Text style={styles.textstyle}>News</Text>
         <Image
-        style={styles.iconstyle} source={{uri:"https://cdn-icons-png.flaticon.com/512/330/330703.png"}}/>
+        style={styles.iconstyle} source={require("../../assets/newsIcon.png")}/>
+        <Text style={styles.textstyle}>News</Text>
       </TouchableOpacity>
       
       <TouchableOpacity style={styles.buttonStyle}
       
       onPress={() =>navigation.navigate("Citizen")}>
-        <Text style={styles.textstyle}>Citizen</Text>
         <Image
-        style={styles.iconstyle} source={{uri:"https://cdn.w600.comps.canstockphoto.com/citizen-icon-vector-with-male-person-eps-vectors_csp72941534.jpg"}}/>
+        style={[styles.iconstyle , {position:"relative" , left:5}]} source={require("../../assets/citizenIcon.png")}/>
+        <Text style={styles.textstyle}>Citizen</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.buttonStyle}
       
       onPress={() =>navigation.navigate("Chief Contacts&Links")}>
-        <Text style={styles.textstyle}>Imp_Links</Text>
         <Image
-        style={styles.iconstyle} source={{uri:"https://www.shutterstock.com/image-illustration/useful-links-keyboard-button-business-260nw-583460233.jpg"}}/>
+        style={[styles.iconstyle, {position:"relative" , left:12}]} source={require("../../assets/linkIcon.png")}/>
+        <Text style={styles.textstyle}>Imp-Links</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.buttonStyle}
       
       onPress={() =>navigation.navigate("About")}>
-        <Text style={styles.textstyle}>About</Text>
         <Image
-        style={styles.iconstyle} source={{uri:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQc3TqlyRzsuc-b0X2uOKsafkCExFUmlLbs0w&usqp=CAU"}}/>
+        style={styles.iconstyle} source={require("../../assets/aboutIcon.png")}/>
+        <Text style={styles.textstyle}>About</Text>
       </TouchableOpacity>
     </View>
   )
@@ -52,16 +52,19 @@ const styles = StyleSheet.create({
     menuContainer:{
         display:"flex",
         flexDirection:"row",
-        justifyContent:"space-evenly"
+        justifyContent:"space-evenly",
+        marginBottom:15,
+        paddingTop:10
 
     },
     buttonStyle:{
 
     },
     textstyle:{
-        textTransform:"capitalize",
-        fontSize:14,
-        fontWeight:500
+        textTransform:"uppercase",
+        fontSize:16,
+        fontWeight:500,
+        marginTop:10
     },
     iconstyle:{
         width:"100%",
