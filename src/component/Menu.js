@@ -40,7 +40,7 @@ const Menu = () => {
       onPress={() =>navigation.navigate("About")}>
         <Image
         style={styles.iconstyle} source={require("../../assets/aboutIcon.png")}/>
-        <Text style={styles.textstyle}>About</Text>
+        <Text style={styles.textstyle}>Check</Text>
       </TouchableOpacity>
     </View>
   )

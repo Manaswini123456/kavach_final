@@ -1,124 +1,125 @@
-import { StyleSheet, Text, View,Image,ScrollView, TouchableOpacity, Linking } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react';
+import { View, Text, TextInput,ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-const About = () => {
+const InputForm = () => {
+  const [bitcoinAddress, setBitcoinAddress] = useState('');
+  const [sms, setSms] = useState('');
+  const [email, setEmail] = useState('');
+  const [websiteLink, setWebsiteLink] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const [bitcoinResult, setBitcoinResult] = useState('');
+  const [smsResult, setSmsResult] = useState('');
+  const [emailResult, setEmailResult] = useState('');
+  const [websiteLinkResult, setWebsiteLinkResult] = useState('');
+  const [phoneNumberResult, setPhoneNumberResult] = useState('');
+
+  const handleSubmit = () => {
+    setBitcoinResult(bitcoinAddress);
+    setSmsResult(sms);
+    setEmailResult(email);
+    setWebsiteLinkResult(websiteLink);
+    setPhoneNumberResult(phoneNumber);
+  };
+
   return (
-    <View style={styles.aboutContainer}>
-      <ScrollView>
-      <Text style={styles.mainHeader}>KAVACH 2023</Text>
-      <Text style={styles.parastyles}>TEAM BUG-BYTE</Text>
+    <ScrollView>
+    <View style={styles.container}>
+      <View>
+        <Text style={styles.label}>Bitcoin Address:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your Bitcoin address"
+          value={bitcoinAddress}
+          onChangeText={(text) => setBitcoinAddress(text)}
+        />
+        <Text style={styles.result}>Result: {bitcoinResult}</Text>
+      </View>
 
       <View>
-        <Image
-        style={styles.imgStyle}
-        source={require('../../assets/kavach_logo.jpg')}/>
+        <Text style={styles.label}>SMS:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your phone number for SMS"
+          value={sms}
+          onChangeText={(text) => setSms(text)}
+        />
+        <Text style={styles.result}>Result: {smsResult}</Text>
       </View>
-      <View style={styles.aboutLayout}>
-        <Text style={styles.aboutSubHeader}>About Kavach 2023</Text>
-        <Text style={styles.parastyle}>
-        Working toward empowering these imperative notions of our society, MoE's Innovation Cell,AICTE along with Bureau of Police Research and Development (BPR&D)(MHA) and Indian Cybercrime Coordination Centre (I4C)(MHA) have launched ‘KAVACH-2023’ a unique national Hackathon to identify innovative concepts and technology solutions for addressing the security challenges of the 21st century faced by our intelligence agencies.KAVACH-2023 is conceived to challenge India’s innovative minds to conceptualize ideas and framework in the domain of cyber security using artificial intelligence, deep learning, machine learning, automation, big data and cloud computing.
-        </Text>
-        <Text style={styles.aboutSubHeader}>About Bug-Byte</Text>
-        <Text style={styles.parastyle}>
-          TEAM BUG_BYTE consists of 6 members, keen in approaching the PS ID KVH-011, with zeal and enthusiasm, by the application of latest technology like: Blockchain, ML. The app provides the users with the facility to actually, get indicated and protected against the cyber crimes happening.
-        </Text>
 
+      <View>
+        <Text style={styles.label}>Email:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your email address"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
+        <Text style={styles.result}>Result: {emailResult}</Text>
       </View>
-      <Text style={[styles.mainHeader,
-      {fontSize:20,paddingLeft:30,paddingRight:10,
-      marginTop:0}]}>Follow on Social Media</Text>
-      <View style={styles.menuContainer}>
-        <TouchableOpacity
-        style={styles.buttonStyle}
-        onPress={() =>Linking.openURL("https://www.youtube.com/watch?v=ysCiPuz6O-U&list=PLmP9QrmTNPqBANLiyVdb7-foPVvG3ONOm")}>
-          <Image
-          style={styles.iconStyle}
-          source={require('../../assets/youtube.png')}/>
-        </TouchableOpacity>
 
-        <TouchableOpacity
-        style={styles.buttonStyle}
-        onPress={() =>Linking.openURL("https://kavach.mic.gov.in/")}>
-          <Image
-          style={styles.iconStyle}
-          source={require('../../assets/kavach_logo_2.jpg')}/>
-        </TouchableOpacity>
-        
+      <View>
+        <Text style={styles.label}>Website Link:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter the website link"
+          value={websiteLink}
+          onChangeText={(text) => setWebsiteLink(text)}
+        />
+        <Text style={styles.result}>Result: {websiteLinkResult}</Text>
       </View>
-      </ScrollView>
-    </View>
-  )
-}
 
+      <View>
+        <Text style={styles.label}>Phone Number:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your phone number"
+          value={phoneNumber}
+          onChangeText={(text) => setPhoneNumber(text)}
+        />
+        <Text style={styles.result}>Result: {phoneNumberResult}</Text>
+      </View>
 
+      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
+    </View></ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
-  aboutContainer:{
-    display:"flex",
-    alignItems:"center",
-    
+  container: {
+    flex: 1,
+    padding: 20,
   },
-  imgStyle:{
-    width:"100%",
-    height:200,
-    borderRadius:20,
-    borderWidth:2,
-    borderColor:"black"
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
-  mainHeader:{
-    fontSize:30,
-    color:"#344055",
-    textTransform:"uppercase",
-    fontWeight:500,
-    marginTop:50,
-    marginBottom:10,
-    lineHeight:30,
-    paddingLeft:70
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 15,
   },
-  parastyle:{
-    fontSize:14,
-    color:"white",
-    paddingBottom:30,
-    
+  result: {
+    fontSize: 16,
+    color: '#007AFF',
+    marginBottom: 15,
   },
-  parastyles:{
-    fontSize:18,
-    color:"grey",
-    paddingBottom:30,
-    paddingLeft:105,
-    textDecorationLine:"underline",
-    color:"orange"
+  submitButton: {
+    backgroundColor: '#007AFF',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
 
-  },
-  aboutLayout:{
-    backgroundColor:"#4c5dab",
-    paddingHorizontal:20,
-    marginVertical:30,
-    
-    
-  },
-  aboutSubHeader:{
-    
-    fontSize:20,
-    color:"black",
-    textTransform:"uppercase",
-    fontWeight:600,
-    marginVertical:15,
-    alignSelf:"center"
-  },
-  menuContainer:{
-    
-    display:"flex",
-    justifyContent:"space-evenly",
-    flexDirection:"row"
-  },
-  iconStyle:{
-    width:'100%',
-    height:80,
-    aspectRatio:1,
-    borderRadius:20
-
-  }
-
-})
-export default About
+export default InputForm;

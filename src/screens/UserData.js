@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Linking,
   Modal,
+  ScrollView,
 } from "react-native";
 
 const DATA = [
@@ -54,6 +55,7 @@ const UserData = () => {
   };
   const courseCard = ({ item }) => {
     return (
+
       <>
         <View style={styles.container2}>
           <Text style={styles.heading}>Potential Spam Contacts</Text>
@@ -224,6 +226,7 @@ const UserData = () => {
     );
   };
   return (
+    <ScrollView>
     <SafeAreaView>
       <View style={styles.container1}>
         <Image
@@ -243,7 +246,7 @@ const UserData = () => {
         data={DATA}
         renderItem={courseCard}
       />
-    </SafeAreaView>
+    </SafeAreaView></ScrollView>
   );
 };
 

@@ -1,3 +1,148 @@
+// import { Link } from '@react-navigation/native';
+// import axios from 'axios';
+// // import { error } from 'console';
+// import React, { useEffect, useState } from 'react';
+// import {
+//   SafeAreaView,
+//   View,
+//   FlatList,
+//   StyleSheet,
+//   Text,
+//   StatusBar,
+//   Image,
+//   TouchableOpacity,
+//   Linking
+// } from 'react-native';
+
+
+
+// const News = () => {
+//   const [articles,setArticles] = useState([]);
+  
+
+//   const getNews = async () =>{
+//     try{
+//     const limit = 10;
+//     const response = await fetch('https://newsapi.org/v2/top-headlines?country=in&apiKey=7acf8f9bd9934aadbd8cf0398abc8895')
+//     const apiData = await response.json()
+//     const trunctedData = apiData.slice(0,limit)
+//     setArticles(trunctedData);
+//   }catch(error){
+//     console.log(error)
+//   }
+//   }
+//   useEffect(()=>{
+//     getNews();
+//   },[]);
+  
+//   const courseCard = ({item}) =>{
+//     return (
+      
+//       <SafeAreaView style={styles.container}>
+//             <FlatList
+//                 data={articles}
+//                 renderItem = {({item}) =>
+//                 <View style={styles.mainContainer}>
+//         <View style={styles.courseContainer}>
+//           <View>
+//             <Image style={styles.cardImage}
+//             source={item.urlToImage}
+//             resizeMode='contain'/>
+//           </View>
+//           <Text style={styles.mainHeader}>
+//             {item.title}
+//           </Text>
+//           <Text style={styles.description}>
+//             {item.description}
+//           </Text>
+          
+//           <View style={styles.buttonContainer}>
+//             <TouchableOpacity style={styles.buttonStyle}
+//             onPress={() =>Linking.openURL(item.url)}>
+//               <Text style={styles.buttonText}>Get Full News</Text>
+//             </TouchableOpacity>
+//           </View>
+//         </View>
+//       </View>
+
+//                     }
+//                 keyExtractor = {(item) => item.title}
+//             />
+
+//         </SafeAreaView>
+//     )
+//   }
+//   return (
+//     <SafeAreaView style={styles.container}>
+//       <FlatList
+//       keyExtractor={(item) =>item.id}
+//       data = {articles}
+//       renderItem={courseCard}/>
+//     </SafeAreaView>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   cardImage:{
+//     width:"100%",
+//     height:undefined,
+//     aspectRatio:1
+//   },
+//   mainContainer:{
+//     paddingHorizontal:20
+//   },
+//   courseContainer:{
+//     padding:30,
+//     backgroundColor:"rgba(255,255,255,0.90)",
+//     textAlign:"center",
+//     borderRadius:5,
+//     shadowColor:"grey",
+//     shadowOffset:{width:0,height:0},
+//     shadowOpacity:0.5,
+//     shadowRadius:8,
+//     elevation:8,
+//     marginVertical:30
+//   },
+//   mainHeader:{
+//     fontSize:15,
+//     color:"#344405",
+//     textTransform:"uppercase",
+//     fontWeight:500,
+//     paddingTop:15,
+//     paddingBottom:15,
+//     textAlign:"center"
+//   },
+//   description:{
+//     textAlign:"justify",
+//     fontStyle:"italic",
+//     paddingBottom:15,
+//     lineHeight:20
+//   },
+//   buttonContainer:{
+//     display:"flex",
+//     flexDirection:"row",
+//     justifyContent:"center"
+//   },
+//   buttonStyle:{
+//     backgroundColor:"#809fff",
+//     borderRadius:5,
+//     borderTopRightRadius:5,
+//     paddingVertical:10,
+//     paddingHorizontal:18,
+//     display:"flex",
+//     justifyContent:"center",
+//     alignItems:"center"
+//   },
+//   buttonText:{
+//     fontSize:15,
+//     color:"black",
+//     textTransform:"uppercase"
+//   }
+// });
+
+
+// export default News;
+
 import { Link } from '@react-navigation/native';
 import React from 'react';
 import {

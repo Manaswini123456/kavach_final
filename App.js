@@ -1,99 +1,47 @@
-import { StyleSheet, Text, View,Image,ScrollView } from 'react-native';
-import React from 'react';
-import Home from './src/screens/Home';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import About from './src/screens/About';
-import Contact from './src/screens/Contact';
-import Course from './src/screens/Course';
-import UserData from './src/screens/UserData';
-import News from './src/screens/News';
-// import WelcomeScreen from './src/screens/Welcome';
-export default function App() {
-  const Stack = createNativeStackNavigator();
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet,Text,view } from "react-native";
+import Login from './src/screens/Login'
+import Home from './src/screens/Home'
+import { useEffect,useState } from "react";
+import { User, onAuthStateChanged } from 'firebase/auth';
+import { FIREBASE_AUTH } from "./FirebaseConfig";
+// import WelcomeScreen from "./src/screens/Welcome";
+import UserStack from "./src/navigation/userStack";
+
+
+const Stack = createNativeStackNavigator()
+
+function App(){
+  const [user,setUser] = useState(null);
+
+  useEffect(()=>{
+    onAuthStateChanged(FIREBASE_AUTH,(user)=>{
+      // console.log('user',user);
+      setUser(user)
+    })
+  },[])
+
   return (
-    <NavigationContainer>
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home"component={Home}
-      options={{
-        headerShown:false
-      }}
-      ></Stack.Screen>
-      {/* <Stack.Screen name="Home"
-      options={{
-        headerShown:false,
-      }}>
-        {(props) => <Home {...props} channelName={"app by team Bug-Byte"}
-        />}
-      </Stack.Screen> */}
-
-      {/* Course Screen === Settings*/}
-      <Stack.Screen name="Settings" component={Course}
-      options={{
-        headerTitleStyle:{
-          fontSize:20,
-          
-        },
-        headerTitleAlign:'center'
-      }}/>
-
-      {/* News Screen */}
-      <Stack.Screen name="News" component={News}
-      options={{
-        headerTitleStyle:{
-          fontSize:20,
-          
-        },
-        headerTitleAlign:'center'}}/>
-
-      {/* UserData*/}
-      <Stack.Screen name="Citizen" component={UserData}
-      options={{
-        headerTitleStyle:{
-          fontSize:20,
-          
-        },
-        headerTitleAlign:'center'}}/>
-
-      {/* Contacts and Links */}
-      <Stack.Screen name="Chief Contacts&Links" component={Contact}
-      options={{
-        headerTitleStyle:{
-          fontSize:20,
-          
-        },
-        headerTitleAlign:'center'}}/>
-
-      {/* About Screen */}
-      <Stack.Screen name="About" component={About}
-      options={{
-        headerTitleStyle:{
-          fontSize:20,
-          
-        },
-        headerTitleAlign:'center'}}/>
-
-
-    </Stack.Navigator>
-    </NavigationContainer>
-    
-    
+    <>
+      {/* <Stack.Navigator initialRouteName='WelcomeScreen'>
+        {user?(<Stack.Screen name="Home" component={Home} options={{headerShown:false}}></Stack.Screen>):
+        (<Stack.Screen name="Login" component={Login} options={{headerShown:false}}></Stack.Screen> )}
+        
+      </Stack.Navigator> */}
+      {user ? <UserStack /> : <Login />}
+    </>
   );
 }
+
 const styles = StyleSheet.create({
-  
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
-
-// import React from "react";
-// import './src/config/firebase'
-// import RootNavigation from "./src/navigation/index";
-// import { registerRootComponent } from "expo";
-
-// function App(){
-//   return (
-//     <RootNavigation/>
-//   )
-// }
-
-// export default registerRootComponent(App)
+export default App

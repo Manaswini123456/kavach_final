@@ -9,7 +9,7 @@ import About from '../screens/About'
 import Contact from '../screens/Contact'
 import UserData from '../screens/UserData'
 import Course from '../screens/Course'
-export default function UserStack() {
+function UserStack() {
   const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
@@ -79,3 +79,5 @@ export default function UserStack() {
 const styles = StyleSheet.create({
   
 });
+
+export default UserStack
