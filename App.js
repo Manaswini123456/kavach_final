@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet,Text,view } from "react-native";
 import Login from './src/screens/Login'
-import Home from './src/screens/Home'
+
 import { useEffect,useState } from "react";
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from "./FirebaseConfig";
@@ -25,11 +25,7 @@ function App(){
 
   return (
     <>
-      {/* <Stack.Navigator initialRouteName='WelcomeScreen'>
-        {user?(<Stack.Screen name="Home" component={Home} options={{headerShown:false}}></Stack.Screen>):
-        (<Stack.Screen name="Login" component={Login} options={{headerShown:false}}></Stack.Screen> )}
-        
-      </Stack.Navigator> */}
+      <StatusBar style="auto" />
       {user ? <UserStack /> : <Login />}
     </>
   );

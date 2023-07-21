@@ -94,10 +94,10 @@ const Login = () => {
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <>
-            <TouchableHighlight  style={styles.buttonStyle1}title="Login" onPress={() => signIn()}>
+            <TouchableHighlight  style={styles.buttonStyle1} title="Login" onPress={() => signIn()}>
               <Text style={styles.buttonTextStyle}>Login</Text>
             </TouchableHighlight>
-            <TouchableHighlight  style={styles.buttonStyle}title="Login" onPress={() => signUp()}>
+            <TouchableHighlight  style={styles.buttonStyle} title="Login" onPress={() => signUp()}>
               <Text style={styles.buttonTextStyle}>Create Account</Text>
             </TouchableHighlight>
             

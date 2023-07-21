@@ -61,12 +61,13 @@ function UserStack() {
         headerTitleAlign:'center'}}/>
 
       {/* About Screen */}
-      <Stack.Screen name="About" component={About}
+      <Stack.Screen name="About"  component={About}
       options={{
         headerTitleStyle:{
           fontSize:20,
           
         },
+        headerTitle:'Spam Check',
         headerTitleAlign:'center'}}/>
 
 
