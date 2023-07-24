@@ -12,7 +12,7 @@ import Course from '../screens/Course'
 function UserStack() {
   const Stack = createNativeStackNavigator();
   return (
-    <NavigationContainer>
+    <NavigationContainer >
     <Stack.Navigator initialRouteName="Home">
       {/* <Stack.Screen name="Home"component={Home}></Stack.Screen> */}
       <Stack.Screen name="Home"
