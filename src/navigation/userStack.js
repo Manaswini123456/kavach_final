@@ -30,7 +30,8 @@ function UserStack() {
           fontSize:20,
           
         },
-        headerTitleAlign:'center'
+        headerTitleAlign:'center',
+        // headerTitle:'Blockchain'
       }}/>
 
       {/* News Screen */}

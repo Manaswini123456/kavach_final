@@ -1,5 +1,4 @@
-import { Link } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -11,40 +10,25 @@ import {
   TouchableOpacity,
   Linking,
   Modal,
-  ScrollView,
 } from "react-native";
 
-const DATA = [
-  {
-    id: "1",
-    title: "Ola electric scooter scam dupes thousands; 20 people arrested",
-    description:
-      "Delhi Police have arrested 20 people from across the country in connection with an elaborate Ola Electric scooter scam.The scammers created a fake website to dupe over 1,000 people looking to purchase the electric vehicles and defrauded them of crores.The funds were taken from them in the name of insurance, down payments, delivery charges, and more.",
-    image_url: require("../../assets/ola.webp"),
-    link: "https://www.newsbytesapp.com/news/auto/ola-electric-scooter-scam-busted/story",
-  },
-];
-
-const CONTACT = [
-  {
-    id: "1",
-    number: "7899851546",
-    reports: "500",
-  },
-  {
-    id: "2",
-    number: "9993841546",
-    reports: "500",
-  },
-  {
-    id: "3",
-    number: "6599851546",
-    reports: "500",
-  },
-];
-
 const UserData = () => {
+  const [userData, setUserData] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    fetchDataFromMongoDB();
+  }, []);
+
+  const fetchDataFromMongoDB = async () => {
+    try {
+      const response = await fetch("http://192.168.1.4:3000/api/get-spam-data");
+      const data = await response.json();
+      setUserData(data);
+    } catch (error) {
+      console.error("Error fetching data from MongoDB:", error);
+    }
+  };
 
   const handleReport = () => {
     setModalVisible(true);
@@ -53,182 +37,35 @@ const UserData = () => {
   const handleCloseModal = () => {
     setModalVisible(false);
   };
-  const courseCard = ({ item }) => {
+
+  const renderHeader = () => {
     return (
-
-      <>
-        <View style={styles.container2}>
-          <Text style={styles.heading}>Potential Spam Contacts</Text>
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={[styles.tableCell, styles.sno, styles.tableHead]}>
-                S.No
-              </Text>
-              <Text
-                style={[styles.tableCell, styles.contact, styles.tableHead]}
-              >
-                Contact Number
-              </Text>
-              <Text style={[styles.tableCell, styles.report, styles.tableHead]}>
-                Report
-              </Text>
-            </View>
-
-            {CONTACT.map((item) => (
-              <View style={styles.tableRow}>
-                <Text
-                  style={[styles.tableCell, styles.sno, styles.tableContent]}
-                >
-                  {item.id}
-                </Text>
-                <Text
-                  style={[
-                    styles.tableCell,
-                    styles.contact,
-                    styles.tableContent,
-                    styles.contactContent,
-                  ]}
-                >
-                  {item.number}
-                </Text>
-                <TouchableOpacity
-                  style={[styles.reportButton, styles.tableContent]}
-                  onPress={handleReport}
-                >
-                  <Text style={styles.reportButtonText}>Report</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-          <Modal visible={modalVisible} animationType="slide">
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalHeading}>Report Spam Contact</Text>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={handleCloseModal}
-              >
-                <Text style={styles.modalButtonText}>Close Modal</Text>
-              </TouchableOpacity>
-            </View>
-          </Modal>
-        </View>
-        <View style={styles.container2}>
-          <Text style={styles.heading}>Potential Spam Messages</Text>
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={[styles.tableCell, styles.sno, styles.tableHead]}>
-                S.No
-              </Text>
-              <Text
-                style={[styles.tableCell, styles.contact, styles.tableHead]}
-              >
-                Contact Number
-              </Text>
-              <Text style={[styles.tableCell, styles.report, styles.tableHead]}>
-                Report
-              </Text>
-            </View>
-
-            {CONTACT.map((item) => (
-              <View style={styles.tableRow}>
-                <Text
-                  style={[styles.tableCell, styles.sno, styles.tableContent]}
-                >
-                  {item.id}
-                </Text>
-                <Text
-                  style={[
-                    styles.tableCell,
-                    styles.contact,
-                    styles.tableContent,
-                    styles.contactContent,
-                  ]}
-                >
-                  {item.number}
-                </Text>
-                <TouchableOpacity
-                  style={[styles.reportButton, styles.tableContent]}
-                  onPress={handleReport}
-                >
-                  <Text style={styles.reportButtonText}>Report</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-          <Modal visible={modalVisible} animationType="slide">
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalHeading}>Report Spam Contact</Text>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={handleCloseModal}
-              >
-                <Text style={styles.modalButtonText}>Close Modal</Text>
-              </TouchableOpacity>
-            </View>
-          </Modal>
-        </View>
-        <View style={styles.container2}>
-          <Text style={styles.heading}>Potential Spam UPI Address</Text>
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={[styles.tableCell, styles.sno, styles.tableHead]}>
-                S.No
-              </Text>
-              <Text
-                style={[styles.tableCell, styles.contact, styles.tableHead]}
-              >
-                Contact Number
-              </Text>
-              <Text style={[styles.tableCell, styles.report, styles.tableHead]}>
-                Report
-              </Text>
-            </View>
-
-            {CONTACT.map((item) => (
-              <View style={styles.tableRow}>
-                <Text
-                  style={[styles.tableCell, styles.sno, styles.tableContent]}
-                >
-                  {item.id}
-                </Text>
-                <Text
-                  style={[
-                    styles.tableCell,
-                    styles.contact,
-                    styles.tableContent,
-                    styles.contactContent,
-                  ]}
-                >
-                  {item.number}
-                </Text>
-                <TouchableOpacity
-                  style={[styles.reportButton, styles.tableContent]}
-                  onPress={handleReport}
-                >
-                  <Text style={styles.reportButtonText}>Report</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-          <Modal visible={modalVisible} animationType="slide">
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalHeading}>Report Spam Contact</Text>
-              <TouchableOpacity
-                style={styles.modalButton}
-                onPress={handleCloseModal}
-              >
-                <Text style={styles.modalButtonText}>Close Modal</Text>
-              </TouchableOpacity>
-            </View>
-          </Modal>
-        </View>
-      </>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>S.No.</Text>
+        <Text style={styles.headerText}>Name</Text>
+        <Text style={styles.headerText}>Type</Text>
+        <Text style={styles.headerText}>Spam</Text>
+      </View>
     );
   };
+
+  const courseCard = ({ item, index }) => {
+    // Use 'item.id' as the key if available, otherwise fallback to 'index'
+    const key = item.id ? item.id.toString() : index.toString();
+
+    return (
+      <View style={styles.container1} key={key}>
+        <Text style={styles.serialNumber}>{index + 1}</Text>
+        <Text style={styles.urlName}>{item.data}</Text>
+        <Text style={styles.type}>{item.type}</Text>
+        <Text style={styles.spam}>{item.spam.toString()}</Text>
+      </View>
+    );
+  };
+
   return (
-    <ScrollView>
-    <SafeAreaView>
-      <View style={styles.container1}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.mainContainer}>
         <Image
           style={styles.image}
           source={require("../../assets/women.jpg")}
@@ -241,70 +78,55 @@ const UserData = () => {
         </View>
       </View>
 
+      {renderHeader()}
       <FlatList
-        keyExtractor={(item) => item.id}
-        data={DATA}
+        keyExtractor={(item, index) =>
+          item.id ? item.id.toString() : index.toString()
+        }
+        data={userData}
         renderItem={courseCard}
       />
-    </SafeAreaView></ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  cardImage: {
-    width: "100%",
-    height: undefined,
-    aspectRatio: 1,
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f2f2f2",
   },
   mainContainer: {
-    paddingHorizontal: 10,
-  },
-  courseContainer: {
-    padding: 30,
-    backgroundColor: "rgba(255,255,255,0.90)",
-    textAlign: "center",
-    borderRadius: 5,
-    shadowColor: "grey",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    elevation: 8,
-    marginVertical: 30,
-  },
-  mainHeader: {
-    fontSize: 15,
-    color: "#344405",
-    textTransform: "uppercase",
-    fontWeight: 500,
-    paddingTop: 15,
-    paddingBottom: 15,
-    textAlign: "center",
-  },
-  description: {
-    textAlign: "justify",
-    fontStyle: "italic",
-    paddingBottom: 15,
-    lineHeight: 20,
-  },
-  buttonContainer: {
-    display: "flex",
     flexDirection: "row",
-    justifyContent: "center",
+    margin: 10,
+    padding: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  buttonStyle: {
-    backgroundColor: "#809fff",
-    borderRadius: 5,
-    borderTopRightRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 18,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+  headerContainer: {
+    flexDirection: "row",
+    marginVertical: 10,
+    padding: 10,
+    backgroundColor: "#f2f2f2",
+    borderRadius: 10,
+    fontWeight: "bold",
+    borderWidth: 1,
+    borderColor: "#f2f2f2",
   },
-  buttonText: {
-    fontSize: 15,
-    color: "black",
+  headerText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
     textTransform: "uppercase",
+    color: "#112244",
   },
   container1: {
     flexDirection: "row",
@@ -319,8 +141,32 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-
     elevation: 5,
+    borderWidth: 1,
+    borderColor: "#f2f2f2",
+  },
+  serialNumber: {
+    flex: 1,
+    fontSize: 16,
+    textAlign: "center",
+  },
+  urlName: {
+    flex: 3,
+    fontSize: 16,
+    textAlign: "center",
+    color: "#112244",
+  },
+  type: {
+    flex: 1,
+    fontSize: 16,
+    textAlign: "center",
+    color: "#112244",
+  },
+  spam: {
+    flex: 1,
+    fontSize: 16,
+    textAlign: "center",
+    color: "red",
   },
   image: {
     width: 100,
@@ -339,88 +185,6 @@ const styles = StyleSheet.create({
   contact: {
     fontSize: 16,
     marginBottom: 5,
-  },
-  contactContent: {
-    fontSize: 16,
-    marginBottom: 5,
-    position:"relative",
-    right:50
-
-  },
-
-  container2: {
-    margin: 10,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  table: {
-    borderWidth: 1,
-    borderColor: "#000",
-    borderRadius: 10,
-    overflow: "hidden",
-  },
-  tableHeader: {
-    backgroundColor: "#000",
-    flexDirection: "row",
-    padding: 5,
-    marginBottom:4
-  },
-  tableRow: {
-    flexDirection: "row",
-    padding: 5,
-  },
-  tableCell: {
-    flex: 1,
-    textAlign: "center",
-  },
-  tableHead: {
-    color: "white",
-  },
-  tableContent: {
-    position: "relative",
-    right: 20,
-  },
-  sno: {
-    borderRightWidth: 1,
-    borderRightColor: "#fff",
-  },
-  contact: {
-    borderRightWidth: 1,
-    borderRightColor: "#fff",
-  },
-  report: {},
-  reportButton: {
-    backgroundColor: "#000",
-    padding: 5,
-    borderRadius: 10,
-  },
-  reportButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalHeading: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  modalButton: {
-    backgroundColor: "#000",
-    padding: 10,
-    borderRadius: 10,
-  },
-  modalButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    textAlign: "center",
   },
 });
 

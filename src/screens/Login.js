@@ -1,16 +1,15 @@
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
   ActivityIndicator,
-  Button,
-  KeyboardAvoidingView,
   Image,
   TouchableHighlight,
+  KeyboardAvoidingView,
+  ScrollView, // Add ScrollView import
 } from "react-native";
-import React, { useState } from "react";
-// import { TextInput } from 'react-native-gesture-handler';
 import { FIREBASE_AUTH } from "../../FirebaseConfig.js";
 import {
   createUserWithEmailAndPassword,
@@ -18,6 +17,7 @@ import {
 } from "firebase/auth";
 import logo from "../../assets/png/logo-black.png";
 import logo1 from "../../assets/cyberDoodle.png";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -55,31 +55,31 @@ const Login = () => {
       setLoading(false);
     }
   };
-  return (
-    
-    <View style={styles.container}>
-   
 
-      <Image
-        source={require("../../assets/png/logo-black.png")}
-        style={styles.logo}
-      ></Image>
-      <Text style={styles.cyberHeadText}>Welcome To Citizen Safety App</Text>
-      <Text style={styles.cyberHeadDesc}>
-        The One Stop Solution To Your CyberSecurity Problems
-      </Text>
-      <Image
-        source={require("../../assets/cyberDoodle.png")}
-        style={styles.logo2}
-      ></Image>
-        
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <Image
+          source={require("../../assets/png/logo-black.png")}
+          style={styles.logo}
+        />
+        <Text style={styles.cyberHeadText}>Welcome To Citizen Safety App</Text>
+        <Text style={styles.cyberHeadDesc}>Fight against cyber crime</Text>
+        {/* <Image
+          source={require("../../assets/cyberDoodle.png")}
+          style={styles.logo2}
+        /> */}
+
         <TextInput
           value={email}
           style={styles.input}
           placeholder="john23@gmail.com"
           autoCapitalize="none"
           onChangeText={(text) => setEmail(text)}
-        ></TextInput>
+        />
         <TextInput
           secureTextEntry={true}
           value={password}
@@ -87,33 +87,33 @@ const Login = () => {
           placeholder="xxxxxxxx"
           autoCapitalize="none"
           onChangeText={(text) => setPassword(text)}
-        ></TextInput>
-    
+        />
 
         {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
           <>
-            <TouchableHighlight  style={styles.buttonStyle1} title="Login" onPress={() => signIn()}>
+            <TouchableHighlight style={styles.buttonStyle1} onPress={() => signIn()}>
               <Text style={styles.buttonTextStyle}>Login</Text>
             </TouchableHighlight>
-            <TouchableHighlight  style={styles.buttonStyle} title="Login" onPress={() => signUp()}>
+            <TouchableHighlight style={styles.buttonStyle} onPress={() => signUp()}>
               <Text style={styles.buttonTextStyle}>Create Account</Text>
             </TouchableHighlight>
-            
           </>
         )}
-        
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop:15,
-    marginHorizontal: 20,
     flex: 1,
+  },
+  contentContainer: {
+    flexGrow: 1,
     justifyContent: "center",
+    padding: 10,
   },
   input: {
     marginVertical: 4,
@@ -122,63 +122,54 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 10,
     backgroundColor: "#fff",
-    top:-15
   },
   logo: {
     height: 200,
     width: 200,
-    bottom: 20,
-    left: 75,
+    alignSelf: "center",
+    marginBottom: 10,
+    marginTop: 0,
   },
   logo2: {
-
     width: "100%",
-    bottom: 10,
-    left: 0,
+    marginBottom: 10,
   },
   cyberHeadText: {
-    fontSize: 20,
+    fontSize: 16,
     color: "#344055",
     textTransform: "uppercase",
-    fontWeight: 600,
-    bottom: 20,
-    left: 15,
+    fontWeight: "600",
+    alignSelf: "center",
+    marginBottom: 20,
   },
   cyberHeadDesc: {
-    fontSize: 14,
+    fontSize: 18,
     color: "#7C7C7C",
-    marginTop: 8,
-    fontWeight: 400,
+    fontWeight: "500",
     alignSelf: "center",
-    bottom: 20,
+    marginBottom: 20,
+    textDecorationLine: "underline",
   },
-
   buttonStyle1: {
     backgroundColor: "black",
     width: "100%",
     height: 40,
-    display: "flex",
     justifyContent: "center",
     borderRadius: 5,
-    alignSelf: "center",
-    
+    marginBottom: 10,
   },
   buttonStyle: {
     backgroundColor: "black",
     width: "100%",
     height: 40,
-    display: "flex",
     justifyContent: "center",
     borderRadius: 5,
-    alignSelf: "center",
-    marginTop: 10,
   },
   buttonTextStyle: {
     color: "white",
     textAlign: "center",
     fontSize: 16,
     textTransform: "uppercase",
-    
   },
 });
 

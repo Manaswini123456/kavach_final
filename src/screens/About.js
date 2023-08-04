@@ -1,137 +1,272 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Pressable, ImageBackground, ScrollView } from 'react-native';
+import axios from 'axios';
 
 const InputForm = () => {
-  const [bitcoinAddress, setBitcoinAddress] = useState('');
-  const [sms, setSms] = useState('');
-  const [email, setEmail] = useState('');
-  const [websiteLink, setWebsiteLink] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [upi, setUpi] = useState('');
+  const [inputData, setInputData] = useState('');
+  const [apiResult, setApiResult] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(''); //for url
 
-  const [bitcoinResult, setBitcoinResult] = useState('');
-  const [smsResult, setSmsResult] = useState('');
-  const [emailResult, setEmailResult] = useState('');
-  const [websiteLinkResult, setWebsiteLinkResult] = useState('');
-  const [phoneNumberResult, setPhoneNumberResult] = useState('');
-  const [upiResult, setUpiResult] = useState('');
+  const [messageResult, setMessageResult] = useState(null);
+  const [inputmessage, setInputMessage] = useState('');
+  const [error_for_mess, setErrorForMess] = useState(''); //for message
 
-  const handleSubmit = () => {
-    setBitcoinResult(bitcoinAddress);
-    setSmsResult(sms);
-    setEmailResult(email);
-    setWebsiteLinkResult(websiteLink);
-    setPhoneNumberResult(phoneNumber);
-    setUpiResult(upi);
+  const [upiinput, setupiInput] = useState('');
+  const [upiresult, setupiResult] = useState(null);
+  const [error_upi, setErrorUpi] = useState(''); //for upi
+
+  const[phoneinput, setphoneInput] = useState('');
+  const [phoneresult, setphoneResult] = useState(null);
+  const [error_phone, setErrorPhone] = useState(''); //for phone
+
+  const handleAPICall = () => {
+    setErrorMessage(''); // Clear any previous error message
+
+    // Make an API request with the inputData
+    axios.post('https://kavach-api.onrender.com/url', { url: inputData })
+      .then(response => {
+        console.log('API Response:', response.data);
+        setApiResult(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data from API:', error);
+        setApiResult(null); // Clear the previous API result if there was any
+        setErrorMessage('Something went wrong. Please try again.');
+      });
   };
 
+  const messagehandle = () => {
+    setErrorForMess(''); // Clear any previous error message
+    axios.post('https://kavach-api.onrender.com/message', { message: inputmessage })
+      .then(response => {
+        console.log('API Response:', response.data);
+        setMessageResult(response.data); // Assuming the API response has a structure like: { spam: true/false }
+      })
+      .catch(error => {
+        console.error('Error fetching data from API:', error);
+        setMessageResult(false); // Set the messageResult to false if there was an error
+        setErrorForMess('Something went wrong. Please try again.');
+      });
+  };
+
+  const upihandle = () => {
+    setErrorUpi(''); // Clear any previous error message
+    axios.get(`https://kavachallapi-production.up.railway.app/upi/${upiinput}`)
+      .then(response => {
+        console.log('API Response:', response.data);
+        setupiResult(response.data); // Assuming the API response has a structure like: { spam: true/false }
+      })
+      .catch(error => {
+        console.error('Error fetching data from API:', error);
+        setupiResult(false); // Set the messageResult to false if there was an error
+        setErrorUpi('Something went wrong. Please try again.');
+      });
+  }
+
+  const handleMarkSpamURL = () => {
+    // Call your server API to mark and store the URL as spam
+    axios.post('http://192.168.1.4:3000/api/mark-spam', { type: 'url', data: inputData })
+      .then(response => {
+        console.log('Spam Marking Response:', response.data);
+        // Handle the response if needed
+      })
+      .catch(error => {
+        console.error('Error marking as spam:', error);
+        // Handle the error if needed
+      });
+  };
+
+  const handleMarkSpamMessage = () => {
+    axios.post('http://192.168.1.4:3000/api/mark-spam-message', { type: 'message', data: inputmessage })
+      .then(response => {
+        console.log('Spam Marking Response:', response.data);
+        // Handle the response if needed
+      }).catch(error => {
+        console.error('Error marking as spam:', error);
+        // Handle the error if needed
+      })
+  }
+
+  const handleMarkSpamUPI = () => {
+    axios.post('http://192.168.1.4:3000/api/mark-spam-upi', { type: 'upi', data: upiinput })
+      .then(response => {
+        console.log('Spam Marking Response:', response.data);
+        // Handle the response if needed
+      }).catch(error => {
+        console.error('Error marking as spam:', error);
+        // Handle the error if needed
+      })
+  }
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View>
-        <Text style={styles.label}>Bitcoin Address:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your Bitcoin address"
-          value={bitcoinAddress}
-          onChangeText={(text) => setBitcoinAddress(text)}
-        />
-        <Text style={styles.result}>Result: {bitcoinResult}</Text>
-      </View>
+    <ImageBackground source={require("../../assets/background.jpg")} style={styles.backgroundImage}>
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <View style={styles.container}>
+          <Text style={styles.title}>FOR URL LINKS</Text>
+          <TextInput
+            style={styles.input}
+            value={inputData}
+            onChangeText={text => setInputData(text)}
+            placeholder="Enter URL"
+            placeholderTextColor="#666"
+          />
+          <Pressable style={styles.button} onPress={handleAPICall}>
+            <Text style={styles.buttonText}>Submit URL</Text>
+          </Pressable>
+          {errorMessage ? (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          ) : null}
+          {apiResult && (
+            <View style={styles.resultContainer}>
+              <Text>Malware: {apiResult.malware.toString()}</Text>
+              <Text>Phishing: {apiResult.phishing.toString()}</Text>
+              <Text>Suspicious: {apiResult.suspicious.toString()}</Text>
+            </View>
+          )}
+          <Pressable style={styles.button2} onPress={handleMarkSpamURL}>
+            <Text style={styles.buttonText}>Mark as Spam</Text>
+          </Pressable>
 
-      <View>
-        <Text style={styles.label}>Email:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your email address"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-        <Text style={styles.result}>Result: {emailResult}</Text>
-      </View>
+          <Text style={styles.title}>FOR MESSAGES</Text>
+          <TextInput
+            style={styles.input}
+            value={inputmessage}
+            onChangeText={text => setInputMessage(text)}
+            placeholder="Enter message"
+            placeholderTextColor="#666"
+          />
+          <Pressable style={styles.button} onPress={messagehandle}>
+            <Text style={styles.buttonText}>Submit Message</Text>
+          </Pressable>
+          {error_for_mess ? (
+            <Text style={styles.errorText}>{error_for_mess}</Text>
+          ) : null}
+          {messageResult !== null && (
+            <View style={styles.resultContainer}>
+              <Text>Spam: {messageResult.result ? 'Yes' : 'No'}</Text>
+            </View>
+          )}
+          <Pressable style={styles.button2} onPress={handleMarkSpamMessage}>
+            <Text style={styles.buttonText}>Mark as Spam</Text>
+          </Pressable>
 
-      <View>
-        <Text style={styles.label}>SMS:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your phone number for SMS"
-          value={sms}
-          onChangeText={(text) => setSms(text)}
-        />
-        <Text style={styles.result}>Result: {smsResult}</Text>
-      </View>
+          <Text style={styles.title}>FOR UPI RESULTS</Text>
+          <TextInput
+            style={styles.input}
+            value={upiinput}
+            onChangeText={text => setupiInput(text)}
+            placeholder="Enter UPI"
+            placeholderTextColor="#666"
+          />
+          <Pressable style={styles.button} onPress={upihandle}>
+            <Text style={styles.buttonText}>Submit UPI</Text>
+          </Pressable>
+          {error_upi ? (
+            <Text style={styles.errorText}>{error_upi}</Text>
+          ) : null}
+          {upiresult !== null && (
+            <View style={styles.resultContainer}>
+              <Text>Name: {upiresult.name}</Text>
+              <Text>Spam_Mark : {upiresult.spam_mark}</Text>
+              <Text>Ham_Mark : {upiresult.ham_mark}</Text>
+            </View>
+          )}
+          <Pressable style={styles.button2} onPress={handleMarkSpamUPI}>
+            <Text style={styles.buttonText}>Mark as Spam</Text>
+          </Pressable>
+          <Text style={styles.title}>FOR PHONE NUMBERS</Text>
+          <TextInput
+            style={styles.input}
+            value={phoneinput}
+            onChangeText={text=>setphoneInput(text)}
+            placeholder="Enter Phone Number"
+            placeholderTextColor="#666"
+          />
+          <Pressable style={styles.button} >
+            <Text style={styles.buttonText}>Submit Phone Number</Text>
+            </Pressable>
+          {error_phone ? (
+            <Text style={styles.errorText}>{error_phone}</Text>
+          ) : null}
+          <Pressable style={styles.button2} >
+            <Text style={styles.buttonText}>Mark as Spam</Text>
+          </Pressable>
+          
 
-      <View>
-        <Text style={styles.label}>Website Links:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter the website link"
-          value={websiteLink}
-          onChangeText={(text) => setWebsiteLink(text)}
-        />
-        <Text style={styles.result}>Result: {websiteLinkResult}</Text>
-      </View>
-
-      <View>
-        <Text style={styles.label}>Phone Number:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your phone number"
-          value={phoneNumber}
-          onChangeText={(text) => setPhoneNumber(text)}
-        />
-        <Text style={styles.result}>Result: {phoneNumberResult}</Text>
-      </View>
-
-      <View>
-        <Text style={styles.label}>UPI:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your UPI address"
-          value={upi}
-          onChangeText={(text) => setUpi(text)}
-        />
-        <Text style={styles.result}>Result: {upiResult}</Text>
-      </View>
-
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Submit</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        </View>
+      </ScrollView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center"
   },
-  label: {
-    fontSize: 16,
+  scrollViewContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 10,
+    color: 'white'
   },
   input: {
+    height: 40,
+    width: '80%',
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 15,
+    borderRadius: 40,
+    borderColor: 'gray',
+    paddingHorizontal: 20,
+    color: 'black',
+    marginBottom: 20,
   },
-  result: {
-    fontSize: 16,
-    color: '#007AFF',
-    marginBottom: 15,
-  },
-  submitButton: {
-    backgroundColor: '#007AFF',
-    padding: 15,
-    borderRadius: 5,
+  button: {
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 30,
+    elevation: 3,
+    backgroundColor: 'black',
+    width: '80%',
+  },
+  button2: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 30,
+    elevation: 3,
+    backgroundColor: 'darkred',
+    width: '80%',
+    marginTop: 20
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+  },
+  resultContainer: {
+    marginTop: 20,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: 'white',
   },
 });
 
