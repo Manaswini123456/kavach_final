@@ -6,10 +6,10 @@ const Menu = () => {
     const navigation = useNavigation();
     return (
         <View style={styles.menuContainer}>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Settings")}>
+            {/* <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Settings")}>
                 <Image style={styles.iconstyle} source={require("../../assets/settingIcon.png")} />
                 <Text style={styles.textstyle}>Settings</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("News")}>
                 <Image style={styles.iconstyle} source={require("../../assets/newsIcon.png")} />
                 <Text style={styles.textstyle}>News</Text>
@@ -26,6 +26,9 @@ const Menu = () => {
             <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("About")}>
                 <Image style={styles.iconstyle} source={require("../../assets/aboutIcon.png")} />
                 <Text style={styles.textstyle}>Check</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Blockchain")}>
+                <Text style={styles.textstyle}>Blockchain</Text>
             </TouchableOpacity>
         </View>
     )

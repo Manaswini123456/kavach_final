@@ -63,6 +63,24 @@ const InputForm = () => {
       });
   }
 
+  const phonehandle = () => {
+    setErrorPhone('');
+    axios.get('https://kavachallapi-production.up.railway.app/phone/query', {
+      params: { phone_number: phoneinput }
+    })
+    .then(response => {
+      console.log('API Response:', response.data);
+      setphoneResult(response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching data from API:', error);
+      setphoneResult(false);
+      setErrorPhone('Something went wrong. Please try again.')
+    });
+  }
+  
+  
+  
   const handleMarkSpamURL = () => {
     // Call your server API to mark and store the URL as spam
     axios.post('http://192.168.1.4:3000/api/mark-spam', { type: 'url', data: inputData })
@@ -97,6 +115,8 @@ const InputForm = () => {
         // Handle the error if needed
       })
   }
+
+  
 
   return (
     <ImageBackground source={require("../../assets/background.jpg")} style={styles.backgroundImage}>
@@ -182,12 +202,20 @@ const InputForm = () => {
             placeholder="Enter Phone Number"
             placeholderTextColor="#666"
           />
-          <Pressable style={styles.button} >
+          <Pressable style={styles.button} onPress={phonehandle} >
             <Text style={styles.buttonText}>Submit Phone Number</Text>
             </Pressable>
           {error_phone ? (
             <Text style={styles.errorText}>{error_phone}</Text>
           ) : null}
+          {phoneresult!==null && (
+            <View style={styles.resultContainer}>
+              <Text>Number : {phoneinput}</Text>
+              <Text>Carrier : {phoneresult.carrier}</Text>
+              <Text>Spam : {phoneresult.is_spam}</Text>
+              <Text>Number of Spam Marks : {phoneresult.spam_marks}</Text>
+              </View>
+          )}
           <Pressable style={styles.button2} >
             <Text style={styles.buttonText}>Mark as Spam</Text>
           </Pressable>
