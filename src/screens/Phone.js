@@ -13,7 +13,7 @@ const Phone = () => {
   },[]);
 
   const fetchSpamPhone = () => {
-    axios.get('http://192.168.1.2:3000/api/get-spam-phone').then(response=>{
+    axios.get('http://192.168.0.107:3000/api/get-spam-phone').then(response=>{
       setSpamPhone(response.data);
     }).catch(error=>{
       console.error('Error fetching spam phone numbers:', error);
@@ -38,7 +38,7 @@ const Phone = () => {
     setErrorPhone('');
 
     // Request for marking as spam
-    const markSpamRequest = axios.post('http://192.168.1.2:3000/api/mark-spam-phone', { type: 'phone', data: phoneinput });
+    const markSpamRequest = axios.post('http://192.168.0.107:3000/api/mark-spam-phone', { type: 'phone', data: phoneinput });
 
     const flagSpamRequest = axios.put(`https://kavachallapi-production.up.railway.app/phone/flag_spam/${phoneinput}`);
 
@@ -58,8 +58,8 @@ const Phone = () => {
 
   const renderItem = ({ item, index }) => (
     <View style={styles.tableRow}>
-      <Text style={[styles.tableCell, styles.tableCellIndex]}>{index + 1}</Text>
-      <Text style={[styles.tableCell, styles.tableCellData]}>{item.data}</Text>
+      <Text style={[styles.tableCell, styles.tableCellIndex , {right:35 , top:10}]}>{index + 1}</Text>
+      <Text style={[styles.tableCell, styles.tableCellData , {right:55 , top:10}]}>{item.data}</Text>
       <Pressable style={styles.reportButton}>
         <Text style={styles.reportButtonText}>Report</Text>
       </Pressable>
@@ -70,8 +70,7 @@ const Phone = () => {
     <View style={styles.tableHeader}>
       <Text style={[styles.tableCell, styles.tableHeaderCell]}>S.No.</Text>
       <Text style={[styles.tableCell, styles.tableHeaderCell]}>Phone Number</Text>
-      <Text style={[styles.tableCell, styles.tableHeaderCell]}>Spam Marked</Text>
-      <Text style={[styles.tableCell, styles.tableHeaderCell]}>Report</Text>
+      <Text style={[styles.tableCell, styles.tableHeaderCell , {right:-10}] }>Report</Text>
     </View>
   );
 
@@ -86,24 +85,28 @@ const Phone = () => {
             placeholder="Enter Phone Number"
             placeholderTextColor="#666"
           />
+          <View style={styles.buttonCont}>
           <Pressable style={styles.button} onPress={phonehandle} >
-            <Text style={styles.buttonText}>Submit Phone Number</Text>
+            <Text style={styles.buttonText}>Check Number</Text>
           </Pressable>
+          <Pressable style={styles.button2} onPress={handleMarkSpamPhone} >
+            <Text style={styles.buttonText}>Mark as Spam</Text>
+          </Pressable>
+          </View>
+          
           {error_phone ? (
             <Text style={styles.errorText}>{error_phone}</Text>
           ) : null}
           {phoneresult !== null && (
             <View style={styles.resultContainer}>
-              <Text>Number: {phoneinput}</Text>
-              <Text>Carrier: {phoneresult.carrier !== undefined ? phoneresult.carrier : 'N/A'}</Text>
-              <Text>Spam: {phoneresult.is_spam.toString()}</Text>
-              <Text>Number of Spam Marks: {phoneresult.spam_marks !== undefined ? phoneresult.spam_marks : 'N/A'}</Text>
-              <Text>Origin: {phoneresult.phone_region !== undefined ? phoneresult.phone_region : 'N/A'}</Text>
+              <Text style={styles.resultText}>Number: {phoneinput}</Text>
+              <Text style={styles.resultText}>Carrier: {phoneresult.carrier !== undefined ? phoneresult.carrier : 'N/A'}</Text>
+              <Text style={styles.resultText}>Spam: {phoneresult.is_spam.toString()}</Text>
+              <Text style={styles.resultText}>Number of Spam Marks: {phoneresult.spam_marks !== undefined ? phoneresult.spam_marks : 'N/A'}</Text>
+              <Text style={styles.resultText}>Origin: {phoneresult.phone_region !== undefined ? phoneresult.phone_region : 'N/A'}</Text>
             </View>
           )}
-          <Pressable style={styles.button2} onPress={handleMarkSpamPhone} >
-            <Text style={styles.buttonText}>Mark as Spam</Text>
-          </Pressable>
+       
 
           {/* Table to display spam marked phone numbers */}
           <FlatList
@@ -111,7 +114,7 @@ const Phone = () => {
             keyExtractor={(item, index) => index.toString()}
             renderItem={renderItem}
             ListHeaderComponent={renderHeader}
-            style={styles.tableContainer}
+            style={[styles.tableContainer]}
           />
       </View>
     </ScrollView>
@@ -119,125 +122,154 @@ const Phone = () => {
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center"
-  },
-  scrollViewContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
+    justifyContent: "center",
+
+    paddingHorizontal: 10,
+    backgroundColor: "white",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    color: 'black'
+    marginTop: 15,
+    color: "black",
   },
   input: {
-    height: 40,
-    width: '80%',
+    height: 50,
+    width: "100%",
     borderWidth: 1,
-    borderRadius: 40,
-    borderColor: 'gray',
-    paddingHorizontal: 20,
-    color: 'black',
+    borderRadius: 5,
+    borderColor: "gray",
+    paddingHorizontal: 10,
+    color: "black",
     marginBottom: 20,
+    fontSize: 16,
+  },
+  buttonCont: {
+    display: "flex",
+    flexDirection: "row",
   },
   button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 30,
-    elevation: 3,
-    backgroundColor: 'black',
-    width: '80%',
+    backgroundColor: "#112244",
+    width: "48%",
+    height: 50,
+    display: "flex",
+    justifyContent: "center",
+    borderRadius: 5,
+
+    marginTop: 0,
+    fontWeight: "bold",
   },
   button2: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 30,
-    elevation: 3,
-    backgroundColor: 'darkred',
-    width: '80%',
-    marginTop: 20
+    backgroundColor: "#B80F0A",
+    width: "48%",
+    height: 50,
+    display: "flex",
+    justifyContent: "center",
+    borderRadius: 5,
+
+    marginTop: 0,
+    fontWeight: "bold",
+    marginLeft: 15,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
+    color: "white",
+    textAlign: "center",
+    fontSize: 20,
+    textTransform: "uppercase",
   },
   errorText: {
-    color: 'red',
+    color: "red",
     marginBottom: 10,
   },
   resultContainer: {
     marginTop: 20,
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 5,
     padding: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
+    display: "flex",
+  },
+  resultText: {
+    margin: 5,
+    fontSize: 18,
+  },
+  resultIcon: {
+    position: "relative",
+    top: 2.5,
+  },
+  resultText1: {
+    position: "relative",
+    top: 3.5,
+    marginLeft: 3,
+  },
+
+  tableScrollView: {
+    flex: 1,
+    width: "100%", // Set the width to 100% to occupy the entire container
   },
   tableContainer: {
+    flexGrow: 1,
     marginTop: 20,
-    width: '80%',
     borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 2,
+    backgroundColor: "white",
   },
   tableRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     borderBottomWidth: 1,
-    borderColor: '#ccc',
-    paddingVertical: 10,
+    borderColor: "#ccc",
+    paddingVertical: 15,
+    width:"100%"
   },
   tableCell: {
     flex: 1,
-    fontSize: 14,
-    textAlign: 'center',
+    fontSize: 15,
+    textAlign: "center",
   },
   tableHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     borderBottomWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     paddingVertical: 10,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
   },
   tableHeaderCell: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    position:"relative",
+    right:20
   },
   tableCellIndex: {
-    width: '15%',
+    width: "15%",
+  },
+  tableCellDataContainer: {
+    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   tableCellData: {
-    width: '55%',
+    fontSize: 14,
   },
   reportButton: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
+  
+    paddingVertical: 9,
     paddingHorizontal: 16,
-    borderRadius: 30,
+    borderRadius: 5,
     elevation: 3,
-    backgroundColor: '#007BFF',
+    backgroundColor: "#007BFF",
+    position:"relative",
+    right:10
   },
   reportButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 })
 

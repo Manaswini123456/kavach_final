@@ -24,7 +24,7 @@ const Menu = () => {
                 <Text style={styles.textstyle}>Imp-Links</Text>
             </TouchableOpacity>
             
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Phone")}>
+            {/* <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Phone")}>
                 <Text style={styles.textstyle}>Phone Check</Text></TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Message_header")}>
                 <Text style={styles.textstyle}>SMS Header</Text></TouchableOpacity>
@@ -39,7 +39,7 @@ const Menu = () => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Chatbot")}>
                 <Text style={styles.textstyle}>Chatbot</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
         </View>
     )
 }
@@ -48,28 +48,34 @@ const styles = StyleSheet.create({
     menuContainer: {
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
+        alignItems: "left",
         marginBottom: 15,
         paddingTop: 10,
-        backgroundColor: "#f7f7f7",
+       
         paddingHorizontal: 20,
         borderRadius: 10,
+        
     },
     menuItem: {
         flexDirection: "row",
         alignItems: "center",
-        paddingVertical: 10,
+        paddingVertical: 11,
+      
+        width:"100%",
+        position:"relative",
+        right:30
+
     },
     textstyle: {
         textTransform: "uppercase",
-        fontSize: 12,
-        fontWeight: "bold",
-        marginLeft: 15,
+        fontSize: 20,
+        
+        marginLeft: 14,
         color: "#333",
     },
     iconstyle: {
-        width: 30,
-        height: 30,
+        width: 60,
+        height: 40,
         resizeMode: "contain",
     },
 });

@@ -7,11 +7,19 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import { useNavigation } from '@react-navigation/native'
+
 
 import Menu from "../component/Menu";
 import { getAuth, signOut } from "firebase/auth"; // Import the necessary Firebase functions for authentication
+import Phonemenu from "./Homescreen/Phonemenu";
+import BasicCyberCrimes from "./Homescreen/Information";
+import FloatingAIButton from "./Homescreen/ChatbotIcon";
+import Chatbot from "./Chatbot";
+import HowToPreventCybercrime from "./Homescreen/Information2";
 
 const Home = (props) => {
+  const navigation = useNavigation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleOpenMenu = () => {
@@ -37,15 +45,32 @@ const Home = (props) => {
       });
   };
 
+  const navigateToAnotherPage = () => {
+    // Replace 'AnotherPage' with the actual name of the destination page in your navigation stack
+    navigation.navigate(Chatbot);
+  };
+
+
   return (
     <View style={styles.maincontainer}>
+      <FloatingAIButton onPress={navigateToAnotherPage}></FloatingAIButton>
+
+      
       <ScrollView style={styles.scroll}>
+      <TouchableOpacity style={styles.menuButton} onPress={handleOpenMenu}>
+        <Text style={styles.menuButtonText}>☰</Text>
+      </TouchableOpacity>
+      
         <View style={styles.homeTop}>
           <Image
             style={styles.headerImage}
             source={require("../../assets/landingHead.png")}
           />
-          <View style={styles.cyberHead}>
+
+          <Phonemenu></Phonemenu>
+          <BasicCyberCrimes></BasicCyberCrimes>
+         
+          {/* <View style={styles.cyberHead}>
             <Text style={styles.cyberHeadText}>Basic Cyber Crimes</Text>
 
             <View style={styles.cyberHeadDescView}>
@@ -68,24 +93,23 @@ const Home = (props) => {
                 6. MALWARE: Infects devices, steals data and many more...
               </Text>
             </View>
-          </View>
+          </View> */}
         </View>
-        <View style={styles.imageContainer}>
+        {/* <View style={styles.imageContainer}>
           <Image
             source={require("../../assets/landingPageIllustration.png")}
             style={styles.image}
           />
-        </View>
-        <View style={styles.landingPageCardContainer}>
+        </View> */}
+        <HowToPreventCybercrime></HowToPreventCybercrime>
+        {/* <View style={styles.landingPageCardContainer}>
           <Image
             style={styles.landingPageCard}
             source={require("../../assets/landingPageCard.png")}
           />
-        </View>
+        </View> */}
       </ScrollView>
-      <TouchableOpacity style={styles.menuButton} onPress={handleOpenMenu}>
-        <Text style={styles.menuButtonText}>☰ Open Menu</Text>
-      </TouchableOpacity>
+      
       {isMenuOpen && (
         <View style={styles.sideMenu}>
           <TouchableOpacity style={styles.closeButton} onPress={handleCloseMenu}>
@@ -94,7 +118,7 @@ const Home = (props) => {
           {/* Menu Items */}
           {/* Replace the following View with your actual menu items */}
           <View style={styles.menuItems}>
-            <Text>MENU</Text>
+           
             <Menu />
             <TouchableOpacity
               style={styles.logoutButton}
@@ -126,7 +150,7 @@ const styles = StyleSheet.create({
     height: 600,
     width: "100%",
     display: "flex",
-    marginTop: 50,
+    marginTop: -5,
   },
   cyberHeadText: {
     fontSize: 25,
@@ -171,51 +195,97 @@ const styles = StyleSheet.create({
     height: 380,
   },
   menuButton: {
-    position: "absolute",
-    bottom: 16,
-    right: 16,
-    backgroundColor: "#007BFF",
+    position: "relative",
+    top:40,
+    left: 0,
+    backgroundColor: "#112244",
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 4,
+    paddingHorizontal: 10,
+    borderRadius: 0,
+    zIndex:9999,
+    width:"100%"
   },
   menuButtonText: {
     color: "#fff",
     fontWeight: "bold",
+    fontSize:45,
+    position:"relative",
+  
+  
+  },
+  AiButton: {
+    position: "absolute",
+    bottom:40,
+    left: 0,
+    backgroundColor: "#112244",
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 0,
+    zIndex:99999,
+    width:"100%"
+  },
+  menuButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize:45,
+    position:"relative",
+  
+  
   },
   sideMenu: {
     position: "absolute",
     top: 0,
     left: 0,
     bottom: 0,
-    width: "50%",
+    width: "70%",
     backgroundColor: "#fff",
     zIndex: 1,
     paddingVertical: 20,
     paddingHorizontal: 20,
+    zIndex:999999
+
+    
   },
   closeButton: {
     alignSelf: "flex-end",
     padding: 8,
   },
   closeButtonText: {
-    fontSize: 24,
+    fontSize: 40,
     fontWeight: "bold",
+    position:"relative",
+    top:25,
+    right:200
+,
   },
   menuItems: {
     marginTop: 20,
+    
   },
-  logoutButton: {
-    backgroundColor: "red",
-    paddingVertical: 10,
-    paddingHorizontal: 45,
-    borderRadius: 4,
-    marginTop: 20,
+  header:{
+    backgroundColor:"#007BFF",
+    height:0,
+    position:"relative",
+    top:40,
+    zIndex:999999
   },
-  logoutButtonText: {
-    color: "white",
-    fontWeight: "bold",
+  logoutButton:{
+    backgroundColor: "crimson",
+    width: "70%",
+    height: 50,
+    display: "flex",
+    justifyContent: "center",
+    borderRadius: 5,
+
+    marginTop:0,
+    color:"white",
+    alignItems:"center"
   },
+  logoutButtonText:{
+    color:"white",
+    fontSize:20
+
+  }
 });
 
 export default Home;

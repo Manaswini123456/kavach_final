@@ -13,7 +13,7 @@ const Upi = () => {
   }, []);
 
   const fetchSpamUPIs = () => {
-    axios.get('http://192.168.1.2:3000/api/get-spam-upi')
+    axios.get('http://192.168.0.107:3000/api/get-spam-upi')
       .then(response => {
         // console.log('Spam UPIs:', response.data);
         setSpamUPIs(response.data);
@@ -41,7 +41,7 @@ const Upi = () => {
     setErrorUpi('');
 
     // Request for marking as spam
-    const markSpamRequest = axios.post('http://192.168.1.2:3000/api/mark-spam-upi', { type: 'upi', data: upiinput });
+    const markSpamRequest = axios.post('http://192.168.0.107:3000/api/mark-spam-upi', { type: 'upi', data: upiinput });
 
     // Concurrent requests to flag as ham and spam (replace {upiid} with the actual upi id)
     const flagHamRequest = axios.put(`https://kavachallapi-production.up.railway.app/upi/flag_ham/${upiinput}`);
@@ -62,8 +62,8 @@ const Upi = () => {
 
   const renderItem = ({ item, index }) => (
     <View style={styles.tableRow}>
-      <Text style={[styles.tableCell, styles.tableCellIndex]}>{index + 1}</Text>
-      <Text style={[styles.tableCell, styles.tableCellData]}>{item.data}</Text>
+      <Text style={[styles.tableCell, styles.tableCellIndex , {right:40 , top:10}]}>{index + 1}</Text>
+      <Text style={[styles.tableCell, styles.tableCellData , {right:50 , top:10}]}>{item.data}</Text>
       <Pressable style={styles.reportButton}>
         <Text style={styles.reportButtonText}>Report</Text>
       </Pressable>
@@ -74,8 +74,7 @@ const Upi = () => {
     <View style={styles.tableHeader}>
       <Text style={[styles.tableCell, styles.tableHeaderCell]}>S.No.</Text>
       <Text style={[styles.tableCell, styles.tableHeaderCell]}>UPI ID</Text>
-      <Text style={[styles.tableCell, styles.tableHeaderCell]}>Spam Marked</Text>
-      <Text style={[styles.tableCell, styles.tableHeaderCell]}>Report</Text>
+      <Text style={[styles.tableCell, styles.tableHeaderCell , {right:-10}]}>Report</Text>
     </View>
   );
 
@@ -90,23 +89,26 @@ const Upi = () => {
           placeholder="Enter UPI"
           placeholderTextColor="#666"
         />
+        <View style={styles.buttonCont}>
         <Pressable style={styles.button} onPress={upihandle}>
           <Text style={styles.buttonText}>Submit UPI</Text>
         </Pressable>
+        <Pressable style={styles.button2} onPress={handleMarkSpamUPI}>
+          <Text style={styles.buttonText}>Mark as Spam</Text>
+        </Pressable>
+        </View>
         {error_upi ? (
           <Text style={styles.errorText}>{error_upi}</Text>
         ) : null}
         {upiresult !== null && (
           <View style={styles.resultContainer}>
-            <Text>Name: {upiresult.name !== undefined ? upiresult.name : 'N/A'}</Text>
-            <Text>UPI ID: {upiresult.upi_id}</Text>
-            <Text>Spam_Mark: {upiresult.spam_mark !== undefined ? upiresult.spam_mark : 'N/A'}</Text>
-            <Text>Ham_Mark: {upiresult.ham_mark !== undefined ? upiresult.ham_mark : 'N/A'}</Text>
+            <Text style={styles.resultText}>Name: {upiresult.name !== undefined ? upiresult.name : 'N/A'}</Text>
+            <Text style={styles.resultText}>UPI ID: {upiresult.upi_id}</Text>
+            <Text style={styles.resultText}>Spam_Mark: {upiresult.spam_mark !== undefined ? upiresult.spam_mark : 'N/A'}</Text>
+            <Text style={styles.resultText}>Ham_Mark: {upiresult.ham_mark !== undefined ? upiresult.ham_mark : 'N/A'}</Text>
           </View>
         )}
-        <Pressable style={styles.button2} onPress={handleMarkSpamUPI}>
-          <Text style={styles.buttonText}>Mark as Spam</Text>
-        </Pressable>
+      
         <FlatList
           data={spamUPIs}
           keyExtractor={(item, index) => index.toString()}
@@ -120,125 +122,154 @@ const Upi = () => {
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center"
-  },
-  scrollViewContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
+    justifyContent: "center",
+
+    paddingHorizontal: 10,
+    backgroundColor: "white",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    color: 'black'
+    marginTop: 15,
+    color: "black",
   },
   input: {
-    height: 40,
-    width: '80%',
+    height: 50,
+    width: "100%",
     borderWidth: 1,
-    borderRadius: 40,
-    borderColor: 'gray',
-    paddingHorizontal: 20,
-    color: 'black',
+    borderRadius: 5,
+    borderColor: "gray",
+    paddingHorizontal: 10,
+    color: "black",
     marginBottom: 20,
+    fontSize: 16,
+  },
+  buttonCont: {
+    display: "flex",
+    flexDirection: "row",
   },
   button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 30,
-    elevation: 3,
-    backgroundColor: 'black',
-    width: '80%',
+    backgroundColor: "#112244",
+    width: "48%",
+    height: 50,
+    display: "flex",
+    justifyContent: "center",
+    borderRadius: 5,
+
+    marginTop: 0,
+    fontWeight: "bold",
   },
   button2: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 30,
-    elevation: 3,
-    backgroundColor: 'darkred',
-    width: '80%',
-    marginTop: 20
+    backgroundColor: "#B80F0A",
+    width: "48%",
+    height: 50,
+    display: "flex",
+    justifyContent: "center",
+    borderRadius: 5,
+
+    marginTop: 0,
+    fontWeight: "bold",
+    marginLeft: 15,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
+    color: "white",
+    textAlign: "center",
+    fontSize: 20,
+    textTransform: "uppercase",
   },
   errorText: {
-    color: 'red',
+    color: "red",
     marginBottom: 10,
   },
   resultContainer: {
     marginTop: 20,
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 5,
     padding: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
+    display: "flex",
+  },
+  resultText: {
+    margin: 5,
+    fontSize: 18,
+  },
+  resultIcon: {
+    position: "relative",
+    top: 2.5,
+  },
+  resultText1: {
+    position: "relative",
+    top: 3.5,
+    marginLeft: 3,
+  },
+
+  tableScrollView: {
+    flex: 1,
+    width: "100%", // Set the width to 100% to occupy the entire container
   },
   tableContainer: {
+    flexGrow: 1,
     marginTop: 20,
-    width: '80%',
     borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 2,
+    backgroundColor: "white",
   },
   tableRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     borderBottomWidth: 1,
-    borderColor: '#ccc',
-    paddingVertical: 10,
+    borderColor: "#ccc",
+    paddingVertical: 15,
+    width:"100%"
   },
   tableCell: {
     flex: 1,
-    fontSize: 14,
-    textAlign: 'center',
+    fontSize: 15,
+    textAlign: "center",
   },
   tableHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     borderBottomWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     paddingVertical: 10,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
   },
   tableHeaderCell: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    position:"relative",
+    right:20
   },
   tableCellIndex: {
-    width: '15%',
+    width: "15%",
+  },
+  tableCellDataContainer: {
+    width: "80%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   tableCellData: {
-    width: '55%',
+    fontSize: 14,
   },
   reportButton: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
+  
+    paddingVertical: 9,
     paddingHorizontal: 16,
-    borderRadius: 30,
+    borderRadius: 5,
     elevation: 3,
-    backgroundColor: '#007BFF',
+    backgroundColor: "#007BFF",
+    position:"relative",
+    right:10
   },
   reportButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
