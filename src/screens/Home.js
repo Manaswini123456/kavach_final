@@ -9,6 +9,7 @@ import {
 } from "react-native";
 
 import Menu from "../component/Menu";
+import { getAuth, signOut } from "firebase/auth"; // Import the necessary Firebase functions for authentication
 
 const Home = (props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,6 +24,18 @@ const Home = (props) => {
 
   const description =
     "Cybercrime is any criminal activity that involves a computer, networked device or a network. While most cybercrimes are carried out in order to generate profit for the cybercriminals, some cybercrimes are carried out against computers or devices directly to damage or disable them.";
+
+  const handleLogout = () => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        console.log("User signed out successfully.");
+        // You can navigate to the login screen or any other screen after logout.
+      })
+      .catch((error) => {
+        console.error("Error signing out:", error);
+      });
+  };
 
   return (
     <View style={styles.maincontainer}>
@@ -82,7 +95,13 @@ const Home = (props) => {
           {/* Replace the following View with your actual menu items */}
           <View style={styles.menuItems}>
             <Text>MENU</Text>
-            <Menu/>
+            <Menu />
+            <TouchableOpacity
+              style={styles.logoutButton}
+              onPress={handleLogout}
+            >
+              <Text style={styles.logoutButtonText}>Logout</Text>
+            </TouchableOpacity>
           </View>
         </View>
       )}
@@ -159,7 +178,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 4,
-    
   },
   menuButtonText: {
     color: "#fff",
@@ -175,7 +193,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     paddingVertical: 20,
     paddingHorizontal: 20,
-    
   },
   closeButton: {
     alignSelf: "flex-end",
@@ -187,7 +204,17 @@ const styles = StyleSheet.create({
   },
   menuItems: {
     marginTop: 20,
-    
+  },
+  logoutButton: {
+    backgroundColor: "red",
+    paddingVertical: 10,
+    paddingHorizontal: 45,
+    borderRadius: 4,
+    marginTop: 20,
+  },
+  logoutButtonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
 

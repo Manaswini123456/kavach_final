@@ -9,6 +9,15 @@ import { User, onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from "./FirebaseConfig";
 // import WelcomeScreen from "./src/screens/Welcome";
 import UserStack from "./src/navigation/userStack";
+import { decode, encode } from 'base-64';
+
+if (!global.btoa) {
+  global.btoa = encode;
+}
+
+if (!global.atob) {
+  global.atob = decode;
+}
 
 
 const Stack = createNativeStackNavigator()

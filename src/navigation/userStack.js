@@ -5,11 +5,17 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import News from '../screens/News';
-import About from '../screens/About';
+
 import Contact from '../screens/Contact';
 import UserData from '../screens/UserData';
-import Course from '../screens/Course';
+// import Course from '../screens/Course';
 import Blockchain from '../screens/Blockchain';
+import Chatbot from '../screens/Chatbot';
+import Phone from '../screens/Phone';
+import Message_header from '../screens/Message_header';
+import Url from '../screens/Url';
+import Upi from '../screens/Upi';
+import Message from '../screens/Message';
 
 function UserStack() {
   const Stack = createNativeStackNavigator();
@@ -25,19 +31,6 @@ function UserStack() {
         >
           {(props) => <Home {...props} channelName={"app by team Bug-Byte"} />}
         </Stack.Screen>
-
-        {/* Course Screen === Settings*/}
-        {/* <Stack.Screen
-          name="Settings"
-          component={Course}
-          options={{
-            headerTitleStyle: {
-              fontSize: 20,
-            },
-            headerTitleAlign: 'center',
-            // headerTitle:'Blockchain'
-          }}
-        /> */}
 
         {/* News Screen */}
         <Stack.Screen
@@ -75,21 +68,61 @@ function UserStack() {
           }}
         />
 
-        {/* About Screen */}
-        <Stack.Screen
-          name="About"
-          component={About}
-          options={{
-            headerTitleStyle: {
-              fontSize: 20,
-            },
-            headerTitle: 'Spam Check',
-            headerTitleAlign: 'center',
-          }}
-        />
+        {/* PHONE NUMBER */}
 
-        {/* Blockchain Screen */}
         <Stack.Screen
+        name='Phone'
+        component={Phone}
+        options={{
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+          headerTitle: 'Phone',
+          headerTitleAlign: 'center',
+        }}/>
+
+        {/* SMS HEADER */}
+
+        <Stack.Screen
+        name='Message_header'
+        component={Message_header}
+        options={{
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+          headerTitle: 'SMS Header',
+          headerTitleAlign: 'center',
+        }}/>
+
+        {/* URL CHECK */}
+
+        <Stack.Screen
+        name='Url'
+        component={Url}
+        options={{
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+          headerTitle: 'URL',
+          headerTitleAlign: 'center',
+        }}/>
+
+        {/* UPI CHECK */}
+
+        <Stack.Screen
+        name='Upi'
+        component={Upi}
+        options={{
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+          headerTitle: 'UPI',
+          headerTitleAlign: 'center',
+        }}/>
+
+        {/* BITCOIN WALLET ADDRESS CHECK */}
+        
+         <Stack.Screen
           name="Blockchain"
           component={Blockchain}
           options={{
@@ -100,6 +133,32 @@ function UserStack() {
             headerTitleAlign: 'center',
           }}
         />
+
+        {/* SMS TEMPLATE */}
+
+        <Stack.Screen
+        name='Message'
+        component={Message}
+        options={{
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+          headerTitle: 'Message Template',
+          headerTitleAlign: 'center',
+        }}/>
+
+        {/* CHATBOT */}
+
+        <Stack.Screen
+        name='Chatbot'
+        component={Chatbot}
+        options={{
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+          headerTitle: 'Chatbot',
+          headerTitleAlign: 'center',
+        }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -3,118 +3,35 @@ import { View, TextInput, Text, StyleSheet, Pressable, ImageBackground, ScrollVi
 import axios from 'axios';
 
 const InputForm = () => {
-  const [inputData, setInputData] = useState('');
-  const [apiResult, setApiResult] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(''); //for url
+ 
+  const [headerinput, setheaderInput] = useState('');
+  const [mess_header_input, setmess_header_input] = useState('');
+  const [headerresult, setheaderResult] = useState(null);
+  const [error_header, setErrorHeader] = useState('');
 
-  const [messageResult, setMessageResult] = useState(null);
-  const [inputmessage, setInputMessage] = useState('');
-  const [error_for_mess, setErrorForMess] = useState(''); //for message
 
-  const [upiinput, setupiInput] = useState('');
-  const [upiresult, setupiResult] = useState(null);
-  const [error_upi, setErrorUpi] = useState(''); //for upi
+  
 
-  const[phoneinput, setphoneInput] = useState('');
-  const [phoneresult, setphoneResult] = useState(null);
-  const [error_phone, setErrorPhone] = useState(''); //for phone
+  
 
-  const handleAPICall = () => {
-    setErrorMessage(''); // Clear any previous error message
-
-    // Make an API request with the inputData
-    axios.post('https://kavach-api.onrender.com/url', { url: inputData })
-      .then(response => {
-        console.log('API Response:', response.data);
-        setApiResult(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data from API:', error);
-        setApiResult(null); // Clear the previous API result if there was any
-        setErrorMessage('Something went wrong. Please try again.');
-      });
-  };
-
-  const messagehandle = () => {
-    setErrorForMess(''); // Clear any previous error message
-    axios.post('https://kavach-api.onrender.com/message', { message: inputmessage })
-      .then(response => {
-        console.log('API Response:', response.data);
-        setMessageResult(response.data); // Assuming the API response has a structure like: { spam: true/false }
-      })
-      .catch(error => {
-        console.error('Error fetching data from API:', error);
-        setMessageResult(false); // Set the messageResult to false if there was an error
-        setErrorForMess('Something went wrong. Please try again.');
-      });
-  };
-
-  const upihandle = () => {
-    setErrorUpi(''); // Clear any previous error message
-    axios.get(`https://kavachallapi-production.up.railway.app/upi/${upiinput}`)
-      .then(response => {
-        console.log('API Response:', response.data);
-        setupiResult(response.data); // Assuming the API response has a structure like: { spam: true/false }
-      })
-      .catch(error => {
-        console.error('Error fetching data from API:', error);
-        setupiResult(false); // Set the messageResult to false if there was an error
-        setErrorUpi('Something went wrong. Please try again.');
-      });
-  }
-
-  const phonehandle = () => {
-    setErrorPhone('');
-    axios.get('https://kavachallapi-production.up.railway.app/phone/query', {
-      params: { phone_number: phoneinput }
+  const headerhandle = () => {
+    setErrorHeader('');
+    axios.get(`https://kavachallapi-production.up.railway.app/sms_header/${headerinput}`,{
+      params:{
+        message: mess_header_input
+      }
     })
-    .then(response => {
-      console.log('API Response:', response.data);
-      setphoneResult(response.data);
-    })
-    .catch(error => {
-      console.error('Error fetching data from API:', error);
-      setphoneResult(false);
-      setErrorPhone('Something went wrong. Please try again.')
-    });
-  }
-  
-  
-  
-  const handleMarkSpamURL = () => {
-    // Call your server API to mark and store the URL as spam
-    axios.post('http://192.168.1.4:3000/api/mark-spam', { type: 'url', data: inputData })
       .then(response => {
-        console.log('Spam Marking Response:', response.data);
-        // Handle the response if needed
+        console.log('API Response:', response.data);
+        setheaderResult(response.data);
       })
       .catch(error => {
-        console.error('Error marking as spam:', error);
-        // Handle the error if needed
+        console.error('Error fetching data from API:', error);
+        setheaderResult(false);
+        setErrorHeader('Something went wrong. Please try again.');
       });
   };
 
-  const handleMarkSpamMessage = () => {
-    axios.post('http://192.168.1.4:3000/api/mark-spam-message', { type: 'message', data: inputmessage })
-      .then(response => {
-        console.log('Spam Marking Response:', response.data);
-        // Handle the response if needed
-      }).catch(error => {
-        console.error('Error marking as spam:', error);
-        // Handle the error if needed
-      })
-  }
-
-  const handleMarkSpamUPI = () => {
-    axios.post('http://192.168.1.4:3000/api/mark-spam-upi', { type: 'upi', data: upiinput })
-      .then(response => {
-        console.log('Spam Marking Response:', response.data);
-        // Handle the response if needed
-      }).catch(error => {
-        console.error('Error marking as spam:', error);
-        // Handle the error if needed
-      })
-  }
 
   
 
@@ -122,105 +39,45 @@ const InputForm = () => {
     <ImageBackground source={require("../../assets/background.jpg")} style={styles.backgroundImage}>
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <View style={styles.container}>
-          <Text style={styles.title}>FOR URL LINKS</Text>
-          <TextInput
-            style={styles.input}
-            value={inputData}
-            onChangeText={text => setInputData(text)}
-            placeholder="Enter URL"
-            placeholderTextColor="#666"
-          />
-          <Pressable style={styles.button} onPress={handleAPICall}>
-            <Text style={styles.buttonText}>Submit URL</Text>
-          </Pressable>
-          {errorMessage ? (
-            <Text style={styles.errorText}>{errorMessage}</Text>
-          ) : null}
-          {apiResult && (
-            <View style={styles.resultContainer}>
-              <Text>Malware: {apiResult.malware.toString()}</Text>
-              <Text>Phishing: {apiResult.phishing.toString()}</Text>
-              <Text>Suspicious: {apiResult.suspicious.toString()}</Text>
-            </View>
-          )}
-          <Pressable style={styles.button2} onPress={handleMarkSpamURL}>
-            <Text style={styles.buttonText}>Mark as Spam</Text>
-          </Pressable>
+          
 
-          <Text style={styles.title}>FOR MESSAGES</Text>
-          <TextInput
-            style={styles.input}
-            value={inputmessage}
-            onChangeText={text => setInputMessage(text)}
-            placeholder="Enter message"
-            placeholderTextColor="#666"
-          />
-          <Pressable style={styles.button} onPress={messagehandle}>
-            <Text style={styles.buttonText}>Submit Message</Text>
-          </Pressable>
-          {error_for_mess ? (
-            <Text style={styles.errorText}>{error_for_mess}</Text>
-          ) : null}
-          {messageResult !== null && (
-            <View style={styles.resultContainer}>
-              <Text>Spam: {messageResult.result ? 'Yes' : 'No'}</Text>
-            </View>
-          )}
-          <Pressable style={styles.button2} onPress={handleMarkSpamMessage}>
-            <Text style={styles.buttonText}>Mark as Spam</Text>
-          </Pressable>
+          
 
-          <Text style={styles.title}>FOR UPI RESULTS</Text>
+          
+
+
+          <Text style={styles.title}>FOR SMS HEADERS</Text>
           <TextInput
             style={styles.input}
-            value={upiinput}
-            onChangeText={text => setupiInput(text)}
-            placeholder="Enter UPI"
+            value={headerinput}
+            onChangeText={text => setheaderInput(text)}
+            placeholder="Enter Header"
             placeholderTextColor="#666"
           />
-          <Pressable style={styles.button} onPress={upihandle}>
-            <Text style={styles.buttonText}>Submit UPI</Text>
+          <TextInput
+            style={styles.input}
+            value={mess_header_input}
+            onChangeText={text => setmess_header_input(text)}
+            placeholder="Enter Message"
+            placeholderTextColor="#666"
+          />
+          <Pressable style={styles.button} onPress={headerhandle} >
+            <Text style={styles.buttonText}>Submit Header</Text>
           </Pressable>
-          {error_upi ? (
-            <Text style={styles.errorText}>{error_upi}</Text>
+          {error_header ? (
+            <Text style={styles.errorText}>{error_header}</Text>
           ) : null}
-          {upiresult !== null && (
+          {headerresult !== null && (
             <View style={styles.resultContainer}>
-              <Text>Name: {upiresult.name}</Text>
-              <Text>Spam_Mark : {upiresult.spam_mark}</Text>
-              <Text>Ham_Mark : {upiresult.ham_mark}</Text>
+              <Text>Name: {headerresult.name !== undefined ? headerresult.name : 'N/A'}</Text>
+              <Text>Spam: {headerresult.is_spam !== undefined ? (headerresult.is_spam ? 'Yes' : 'No') : 'N/A'}</Text>
+              <Text>Number of spam: {headerresult.number_of_spam_marks !== undefined ? headerresult.number_of_spam_marks : 'N/A'}</Text>
             </View>
           )}
-          <Pressable style={styles.button2} onPress={handleMarkSpamUPI}>
-            <Text style={styles.buttonText}>Mark as Spam</Text>
-          </Pressable>
-          <Text style={styles.title}>FOR PHONE NUMBERS</Text>
-          <TextInput
-            style={styles.input}
-            value={phoneinput}
-            onChangeText={text=>setphoneInput(text)}
-            placeholder="Enter Phone Number"
-            placeholderTextColor="#666"
-          />
-          <Pressable style={styles.button} onPress={phonehandle} >
-            <Text style={styles.buttonText}>Submit Phone Number</Text>
-            </Pressable>
-          {error_phone ? (
-            <Text style={styles.errorText}>{error_phone}</Text>
-          ) : null}
-          {phoneresult!==null && (
-            <View style={styles.resultContainer}>
-              <Text>Number : {phoneinput}</Text>
-              <Text>Carrier : {phoneresult.carrier}</Text>
-              <Text>Spam : {phoneresult.is_spam}</Text>
-              <Text>Number of Spam Marks : {phoneresult.spam_marks}</Text>
-              </View>
-          )}
+
           <Pressable style={styles.button2} >
             <Text style={styles.buttonText}>Mark as Spam</Text>
           </Pressable>
-          
-
         </View>
       </ScrollView>
     </ImageBackground>

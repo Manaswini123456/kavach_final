@@ -75,15 +75,62 @@ app.post('/api/mark-spam-upi', async (req, res) => {
   }
 });
 
-app.get('/api/get-spam-data', async (req, res) => {
+app.post('/api/mark-spam-phone', async (req, res) => {
+  const { type, data } = req.body;
   try {
-    const spamData = await SpamModel.find({ spam: true });
-    res.json(spamData);
+    const spamData = new SpamModel({
+      type,
+      data,
+      spam: true,
+    });
+    await spamData.save();
+    res.json({ success: true, message: 'Phone number marked as spam and stored in the database.' });
   } catch (error) {
-    console.error('Error fetching spam data:', error);
+    console.error('Error storing spam Phone number:', error);
     res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
   }
 });
+
+app.get('/api/get-spam-phone', async (req, res) => {
+  try {
+    const spamData = await SpamModel.find({ type: 'phone', spam: true });
+    res.json(spamData);
+  } catch (error) {
+    console.error('Error fetching spam Phone number data:', error);
+    res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+  }
+})
+
+app.get('/api/get-spam-url', async (req, res) => {
+  try {
+    const spamData = await SpamModel.find({ type: 'url', spam: true });
+    res.json(spamData);
+  } catch (error) {
+    console.error('Error fetching spam URL data:', error);
+    res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+  }
+});
+
+app.get('/api/get-spam-message', async (req, res) => {
+  try {
+    const spamData = await SpamModel.find({ type: 'message', spam: true });
+    res.json(spamData);
+  } catch (error) {
+    console.error('Error fetching spam Message data:', error);
+    res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+  }
+});
+
+app.get('/api/get-spam-upi', async (req, res) => {
+  try {
+    const spamData = await SpamModel.find({ type: 'upi', spam: true });
+    res.json(spamData);
+  } catch (error) {
+    console.error('Error fetching spam UPI data:', error);
+    res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

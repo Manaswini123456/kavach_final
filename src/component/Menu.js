@@ -23,13 +23,23 @@ const Menu = () => {
                 <Image style={styles.iconstyle} source={require("../../assets/linkIcon.png")} />
                 <Text style={styles.textstyle}>Imp-Links</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("About")}>
-                <Image style={styles.iconstyle} source={require("../../assets/aboutIcon.png")} />
-                <Text style={styles.textstyle}>Check</Text>
-            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Phone")}>
+                <Text style={styles.textstyle}>Phone Check</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Message_header")}>
+                <Text style={styles.textstyle}>SMS Header</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Url")}>
+                <Text style={styles.textstyle}>URL Check</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Upi")}>
+                <Text style={styles.textstyle}>UPI Check</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Message")}>
+                <Text style={styles.textstyle}>SMS TEMPLATE</Text></TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Blockchain")}>
                 <Text style={styles.textstyle}>Blockchain</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("Chatbot")}>
+                <Text style={styles.textstyle}>Chatbot</Text>
+                </TouchableOpacity>
         </View>
     )
 }
