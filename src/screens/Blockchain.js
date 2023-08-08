@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, ScrollView , Picker} from 'react-native'
+import { View, StyleSheet, Text, ScrollView } from 'react-native'
 import { Input } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import React from 'react'
@@ -42,7 +42,7 @@ const Blockchain = () => {
         style={styles.input}
         placeholder='Enter Wallet Address'
       />
-      <DropdownSelect></DropdownSelect>
+      {/* <DropdownSelect></DropdownSelect> */}
       <Button
         style={{ width: '100%', margin: 'auto',  }}
         title="Search"

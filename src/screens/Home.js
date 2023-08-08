@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useNavigation } from '@react-navigation/native'
-
+import Loader from "./Loader";
 
 import Menu from "../component/Menu";
 import { getAuth, signOut } from "firebase/auth"; // Import the necessary Firebase functions for authentication
@@ -55,6 +55,7 @@ const Home = (props) => {
     <View style={styles.maincontainer}>
       {/* <FloatingAIButton onPress={navigateToAnotherPage}></FloatingAIButton> */}
 <FloatingMenu></FloatingMenu>
+
       
       <ScrollView style={styles.scroll}>
       {/* <TouchableOpacity style={styles.menuButton} onPress={handleOpenMenu}>

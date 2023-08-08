@@ -27,6 +27,27 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(cors());
 
+app.post('/api/mark-spam-header'), async (req, res) => {
+  const { type, data } = req.body;
+  try {
+    const existingData = await SpamModel.findOne({ type, data });
+    if (existingData) {
+      return res.json({ success: false, message: 'Data is already marked as spam.' });
+    }
+    
+    const spamData = new SpamModel({
+      type,
+      data,
+      spam: true,
+    });
+    await spamData.save();
+    res.json({ success: true, message: 'Data marked as spam and stored in the database.' });
+  } catch (error) {
+    console.error('Error storing spam data:', error);
+    res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+  }
+}
+
 app.post('/api/mark-spam', async (req, res) => {
   const { type, data } = req.body;
   try {
@@ -151,7 +172,15 @@ app.get('/api/get-spam-upi', async (req, res) => {
   }
 });
 
-
+app.get('/api/get-spam-header', async (req, res) => {
+  try {
+    const spamData = await SpamModel.find({ type: 'header', spam: true });
+    res.json(spamData);
+  } catch (error) {
+    console.error('Error fetching spam Header data:', error);
+    res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
+  }
+})
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

@@ -6,49 +6,66 @@ import {
   StyleSheet,
   Pressable,
   FlatList,
+  ScrollView,
+  Modal,
+  TouchableOpacity
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import axios from "axios";
+import Loader from "./Loader";
+
 
 const Url = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  
+  
   const [inputData, setInputData] = useState("");
   const [apiResult, setApiResult] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [spamUrls, setSpamUrls] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     fetchSpamUrls();
   }, []);
 
   const fetchSpamUrls = () => {
+
+    
     axios
-      .get("http://192.168.102.2:3000/api/get-spam-url")
+      .get("http://10.10.49.229:3000/api/get-spam-url")
       .then((response) => {
+        // console.log("Spam URLs:", response.data);
         setSpamUrls(response.data);
+        
       })
       .catch((error) => {
         console.error("Error fetching spam URLs:", error);
+        
       });
   };
 
   const handleAPICall = () => {
+    setIsLoading(true);
     setErrorMessage("");
     axios
       .post("https://kavach-api.onrender.com/url", { url: inputData })
       .then((response) => {
         console.log("API Response:", response.data);
         setApiResult(response.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching data from API:", error);
         setApiResult(null);
         setErrorMessage("Something went wrong. Please try again.");
+        setIsLoading(false);
       });
   };
 
   const handleMarkSpamURL = () => {
     axios
-      .post("http://192.168.102.2:3000/api/mark-spam", {
+      .post("http://10.10.49.229:3000/api/mark-spam", {
         type: "url",
         data: inputData,
       })
@@ -60,6 +77,10 @@ const Url = () => {
         console.error("Error marking as spam:", error);
       });
   };
+
+  const handleButtonClick = () => {
+    setModalVisible(true);
+  }
 
   const renderItem = ({ item, index }) => (
     <View style={styles.tableRow}>
@@ -86,6 +107,9 @@ const Url = () => {
 
   return (
     <View style={styles.container}>
+      
+      {isLoading && <Loader />}
+   
       <Text style={styles.title}>Check Website Address :</Text>
       <TextInput
         style={styles.input}
@@ -100,26 +124,105 @@ const Url = () => {
           <Text style={styles.buttonText}>Check URL</Text>
         </Pressable>
 
-        <Pressable style={styles.button2} onPress={handleMarkSpamURL}>
+        <Pressable style={styles.button2} onPress= {handleButtonClick}>
           <Text style={styles.buttonText}>Mark as Spam</Text>
         </Pressable>
       </View>
+      <Modal
+      visible={modalVisible}
+      animationType="slide"
+      transparent={true}
+      // onRequestClose={onClose}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>Are you sure?</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText} onPress={() => {handleMarkSpamURL();
+              setModalVisible(false)
+              }}>Continue</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText} onPress={()=>{setModalVisible(false)}}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
 
       {errorMessage ? (
         <Text style={styles.errorText}>{errorMessage}</Text>
       ) : null}
       {apiResult && (
         <View style={styles.resultContainer}>
-          {/* Your API result rendering logic */}
+          <Text style={styles.resultText}>
+            Malware:{" "}
+            {apiResult.malware ? (
+              <>
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  
+                  <Text style={styles.resultText1}>Malware Detected!</Text>
+                </View>
+              </>
+            ) : (
+              <>
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  
+                  <Text style={styles.resultText1}>No Malware Detected!</Text>
+                </View>
+              </>
+            )}
+          </Text>
+          <Text style={styles.resultText}>
+            Phishing: {apiResult.phishing ? (
+              <>
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                 
+                  <Text style={styles.resultText1}>Possible Phishing Detected!</Text>
+                </View>
+              </>
+            ) : (
+              <>
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  
+                  <Text style={styles.resultText1}>No Phishing Detected!</Text>
+                </View>
+              </>
+            )}
+          </Text>
+          <Text style={styles.resultText}>
+            Suspicious: {apiResult.suspicious ? (
+              <>
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  
+                  <Text style={styles.resultText1}>Unusual Behaviour Detected!</Text>
+                </View>
+              </>
+            ) : (
+              <>
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  
+                  <Text style={styles.resultText1}>Normal Behaviour!</Text>
+                </View>
+              </>
+            )}
+          </Text>
         </View>
       )}
-      <FlatList
-        data={spamUrls}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-        ListHeaderComponent={renderHeader}
+      <ScrollView
+        style={styles.tableScrollView}
         contentContainerStyle={styles.tableContainer}
-      />
+      >
+        <View>
+          <FlatList
+            data={spamUrls}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={renderItem}
+            ListHeaderComponent={renderHeader}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -272,5 +375,38 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: 300,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    backgroundColor: '#007BFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    width: '45%',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+  },
 });
-export default Url;
+export default Url

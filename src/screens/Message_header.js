@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, Pressable, ImageBackground, ScrollView, FlatList } from 'react-native';
 import axios from 'axios';
+import Loader from "./Loader";
+
 
 const Message_header = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const [headerinput, setheaderInput] = useState('');
   const [mess_header_input, setmess_header_input] = useState('');
   const [headerresult, setheaderResult] = useState(null);
@@ -14,7 +18,7 @@ const Message_header = () => {
   }, []);
 
   const fetchSpamHeaders = () => {
-    axios.get('http://192.168.102.2:3000/api/get-spam-header')
+    axios.get('http://10.10.49.229:3000/api/get-spam-header')
       .then(response => {
         // console.log('Spam Headers:', response.data);
         const headerValues = response.data.map(item => item.data);
@@ -26,6 +30,8 @@ const Message_header = () => {
   };
 
   const headerhandle = () => {
+    setIsLoading(true);
+
     setErrorHeader('');
 
     if (!headerinput || !mess_header_input) {
@@ -41,11 +47,15 @@ const Message_header = () => {
       .then(response => {
         console.log('API Response:', response.data);
         setheaderResult(response.data);
+        setIsLoading(false);
+
       })
       .catch(error => {
         console.error('Error fetching data from API:', error);
         setheaderResult(null);
         setErrorHeader('Something went wrong. Please try again.');
+        setIsLoading(false);
+
       });
   };
 
@@ -53,7 +63,7 @@ const Message_header = () => {
     setErrorHeader('');
 
     // Request for marking as spam
-    const markSpamRequest_Header = axios.post('http://192.168.102.2:3000/api/mark-spam-header', { type: 'header', data: headerinput });
+    const markSpamRequest_Header = axios.post('http://10.10.49.229:3000/api/mark-spam-header', { type: 'header', data: headerinput });
     const flagSpamRequest_Header = axios.put(`https://kavachallapi-production.up.railway.app/sms_header/flag_spam/${headerinput}`);
 
     axios.all([markSpamRequest_Header, flagSpamRequest_Header]).then(axios.spread((...responses) => {
@@ -82,6 +92,8 @@ const Message_header = () => {
 
   return (
     <View style={styles.container}>
+      {isLoading && <Loader />}
+
       <Text style={styles.title}>FOR SMS HEADERS</Text>
       <TextInput
         style={styles.input}

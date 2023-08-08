@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, Pressable, ScrollView, FlatList } from 'react-native';
 import axios from 'axios';
-
+import Loader from './Loader';
 const Upi = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const [upiinput, setupiInput] = useState('');
   const [upiresult, setupiResult] = useState(null);
   const [error_upi, setErrorUpi] = useState('');
@@ -13,7 +15,7 @@ const Upi = () => {
   }, []);
 
   const fetchSpamUPIs = () => {
-    axios.get('http://192.168.102.2:3000/api/get-spam-upi')
+    axios.get('http://10.10.49.229:3000/api/get-spam-upi')
       .then(response => {
         setSpamUPIs(response.data);
       })
@@ -23,16 +25,22 @@ const Upi = () => {
   };
 
   const upihandle = () => {
+    setIsLoading(true);
+
     setErrorUpi('');
     axios.get(`https://kavachallapi-production.up.railway.app/upi/${upiinput}`)
       .then(response => {
         console.log('API Response:', response.data);
         setupiResult(response.data);
+        setIsLoading(false);
+
       })
       .catch(error => {
         console.error('Error fetching data from API:', error);
         setupiResult(false);
         setErrorUpi('Something went wrong. Please try again.');
+        setIsLoading(false);
+
       });
   };
 
@@ -76,6 +84,8 @@ const Upi = () => {
 
   return (
     <View style={styles.container}>
+      {isLoading && <Loader />}
+
       <Text style={styles.title}>FOR UPI RESULTS</Text>
       <TextInput
         style={styles.input}

@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, Text, StyleSheet, Pressable, ImageBackground, FlatList } from 'react-native';
 import axios from 'axios';
+import Loader from "./Loader";
+
 
 const Phone = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const [phoneinput, setphoneInput] = useState('');
   const [phoneresult, setphoneResult] = useState(null);
   const [error_phone, setErrorPhone] = useState('');
@@ -13,7 +17,7 @@ const Phone = () => {
   }, []);
 
   const fetchSpamPhone = () => {
-    axios.get('http://192.168.102.2:3000/api/get-spam-phone')
+    axios.get('http://10.10.49.229:3000/api/get-spam-phone')
       .then(response => {
         setSpamPhone(response.data);
       })
@@ -23,23 +27,29 @@ const Phone = () => {
   };
 
   const phonehandle = () => {
+    setIsLoading(true);
+
     setErrorPhone('');
     axios.get('https://kavachallapi-production.up.railway.app/phone/query/' + phoneinput)
       .then(response => {
         console.log('API Response:', response.data);
         setphoneResult(response.data);
+        setIsLoading(false);
+
       })
       .catch(error => {
         console.error('Error fetching data from API:', error);
         setphoneResult(false);
         setErrorPhone('Something went wrong. Please try again.');
+        setIsLoading(false);
+
       });
   };
 
   const handleMarkSpamPhone = () => {
     setErrorPhone('');
 
-    const markSpamRequest = axios.post('http://192.168.102.2:3000/api/mark-spam-phone', { type: 'phone', data: phoneinput });
+    const markSpamRequest = axios.post('http://10.10.49.229:3000/api/mark-spam-phone', { type: 'phone', data: phoneinput });
     const flagSpamRequest = axios.put(`https://kavachallapi-production.up.railway.app/phone/flag_spam/${phoneinput}`);
 
     axios.all([markSpamRequest, flagSpamRequest]).then(axios.spread((...responses) => {
@@ -76,6 +86,8 @@ const Phone = () => {
 
   return (
     <View style={styles.container}>
+      {isLoading && <Loader />}
+
       <Text style={styles.title}>FOR PHONE NUMBERS</Text>
       <TextInput
         style={styles.input}

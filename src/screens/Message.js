@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, StyleSheet, Pressable, FlatList } from 'react-native';
 import axios from 'axios';
+import Loader from "./Loader";
+
 
 const Message = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const [messageResult, setMessageResult] = useState(null);
   const [inputmessage, setInputMessage] = useState('');
   const [error_for_mess, setErrorForMess] = useState('');
@@ -13,7 +17,7 @@ const Message = () => {
   }, []);
 
   const fetchSpamMessages = () => {
-    axios.get('http://192.168.102.2:3000/api/get-spam-message')
+    axios.get('http://10.10.49.229:3000/api/get-spam-message')
       .then(response => {
         // console.log('Spam Messages:', response.data);
         setSpamMessage(response.data);
@@ -24,21 +28,29 @@ const Message = () => {
   };
 
   const messagehandle = () => {
+    setIsLoading(true);
+
     setErrorForMess('');
     axios.post('https://kavach-api.onrender.com/message', { message: inputmessage })
       .then(response => {
         console.log('API Response:', response.data);
         setMessageResult(response.data);
+        setIsLoading(false);
+
       })
       .catch(error => {
         console.error('Error fetching data from API:', error);
         setMessageResult(false);
         setErrorForMess('Something went wrong. Please try again.');
-      });
+        setIsLoading(false);
+
+      }); 
+      // let data = (messageResult.links); 
+      // console.log(data);
   };
 
   const handleMarkSpamMessage = () => {
-    axios.post('http://192.168.102.2:3000/api/mark-spam-message', { type: 'message', data: inputmessage })
+    axios.post('http://10.10.49.229:3000/api/mark-spam-message', { type: 'message', data: inputmessage })
       .then(response => {
         console.log('Spam Marking Response:', response.data);
         fetchSpamMessages(); // Refresh the spam messages list after marking as spam
@@ -50,8 +62,9 @@ const Message = () => {
 
   const renderItem = ({ item, index }) => (
     <View style={styles.tableRow}>
-      <Text style={[styles.tableCell, styles.tableCellIndex , {right:85 , top :10}]}>{index + 1}</Text>
-      <Text style={[styles.tableCellData  , {right:105 , top :10}]}>{item.data}</Text>
+      <Text style={[styles.tableCell, styles.tableCellIndex , {right:55 , top :10}]}>{index + 1}</Text>
+      <Text style={[styles.tableCellData  , {right:65 , top :10 , width:"30%"}]}>{item.data}</Text>
+
       <Pressable style={styles.reportButton}>
         <Text style={styles.reportButtonText}>Report</Text>
       </Pressable>
@@ -68,6 +81,8 @@ const Message = () => {
 
   return (
     <View style={styles.container}>
+      {isLoading && <Loader />}
+
       <Text style={styles.title}>FOR MESSAGES</Text>
       <TextInput
         style={styles.input}
@@ -90,7 +105,19 @@ const Message = () => {
       ) : null}
       {messageResult !== null && (
         <View style={styles.resultContainer}>
-          <Text style={styles.resultText}>Spam: {messageResult.result !== undefined ? (messageResult.result ? 'Yes' : 'No') : 'N/A'}</Text>
+          <Text style={styles.resultText}>Spam: {messageResult.result !== undefined ? (messageResult.result ? 'Yes' : 'No') : 'N/A'}</Text> 
+          <Text style={styles.resultText}>Links: {messageResult.result !== undefined ? (Object.keys(messageResult.links).length>0 ? 'Found' : 'Not Found') : 'N/A'}</Text>  
+          {
+            Object.keys(messageResult.links).map((item,idx)=>{
+              return (
+               <View> 
+                 <Text style={styles.resultText}>Name: {messageResult.links[item].name}</Text> 
+                 <Text style={styles.resultText}>Malware: {messageResult.links[item].result.malware}</Text> 
+                </View> 
+                
+              )
+            })
+          }
         </View>
       )}
 
@@ -247,6 +274,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#007BFF",
     position: "relative",
     right: 10,
+    height:"40%",
+    display:"flex",
+    justifyContent:"center",
+    alignItems:"center",
+    top:30
   },
   reportButtonText: {
     color: "white",
