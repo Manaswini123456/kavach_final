@@ -181,6 +181,45 @@ app.get('/api/get-spam-header', async (req, res) => {
     res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
   }
 })
+
+const AadharDataSchema = new mongoose.Schema({
+  aadharNumber: String,
+  name: String,
+  phoneNumber: String,
+  address: String,
+  feedback: String,
+  reportedUrls: [String],
+});
+
+const AadharData = mongoose.model('AadharData', AadharDataSchema);
+
+const ReportSchema = new mongoose.Schema({
+  url: String,
+  createdAt: { type: Date, default: Date.now },
+});
+
+const Report = mongoose.model('Report', ReportSchema);
+
+app.post('/submit', async (req, res) => {
+  try {
+    const { aadharNumber, name, phoneNumber, address, feedback, reportedUrls } = req.body;
+
+    const newData = new AadharData({
+      aadharNumber,
+      name,
+      phoneNumber,
+      address,
+      feedback,
+      reportedUrls,
+    });
+
+    await newData.save();
+
+    res.status(201).json({ message: 'Data saved successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

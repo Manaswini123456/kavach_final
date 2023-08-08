@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   centerMenuItem: {
     alignItems: "center",
     backgroundColor: "crimson",
-    borderRadius: "50%",
+    borderRadius: 50,
     padding: 15,
     
   },

@@ -10,12 +10,15 @@ import {
   Modal,
   TouchableOpacity
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+
 import axios from "axios";
 import Loader from "./Loader";
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import Report_url from "./report_url";
 
 
-const Url = () => {
+const Url = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   
   
@@ -33,7 +36,7 @@ const Url = () => {
 
     
     axios
-      .get("http://10.10.49.229:3000/api/get-spam-url")
+      .get("http://192.168.102.2:3000/api/get-spam-url")
       .then((response) => {
         // console.log("Spam URLs:", response.data);
         setSpamUrls(response.data);
@@ -65,7 +68,7 @@ const Url = () => {
 
   const handleMarkSpamURL = () => {
     axios
-      .post("http://10.10.49.229:3000/api/mark-spam", {
+      .post("http://192.168.102.2:3000/api/mark-spam", {
         type: "url",
         data: inputData,
       })
@@ -82,6 +85,10 @@ const Url = () => {
     setModalVisible(true);
   }
 
+  const report = ()=>{
+    navigation.navigate('Report_url')
+  }
+
   const renderItem = ({ item, index }) => (
     <View style={styles.tableRow}>
       <Text style={[styles.tableCell, styles.tableCellIndex ,{top:10}]}>{index + 1}</Text>
@@ -89,7 +96,7 @@ const Url = () => {
         <Text style={styles.tableCellData}>{item.data}</Text>
         <Pressable
           style={styles.reportButton}
-          onPress={() => handleReportSpam(item._id)}
+          onPress={() => report()}
         >
           <Text style={styles.reportButtonText}>Report</Text>
         </Pressable>

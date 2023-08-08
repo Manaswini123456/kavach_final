@@ -16,6 +16,7 @@ import Message_header from '../screens/Message_header';
 import Url from '../screens/Url';
 import Upi from '../screens/Upi';
 import Message from '../screens/Message';
+import Report_url from '../screens/report_url';
 
 function UserStack() {
   const Stack = createNativeStackNavigator();
@@ -43,6 +44,17 @@ function UserStack() {
             headerTitleAlign: 'center',
           }}
         />
+
+        <Stack.Screen 
+        name='Report_url'
+        component={Report_url}
+        options={{
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+          headerTitleAlign: 'center',
+        }}/>
+
 
         {/* UserData*/}
         <Stack.Screen

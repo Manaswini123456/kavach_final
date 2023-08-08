@@ -91,7 +91,7 @@ const Login = () => {
         />
 
         {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator  />
         ) : (
           <>
             <TouchableHighlight style={styles.buttonStyle1} onPress={() => signIn()}>

@@ -18,7 +18,7 @@ const Phone = () => {
   }, []);
 
   const fetchSpamPhone = () => {
-    axios.get('http://10.10.49.229:3000/api/get-spam-phone')
+    axios.get('http://192.168.102.2:3000/api/get-spam-phone')
       .then(response => {
         setSpamPhone(response.data);
       })
@@ -53,7 +53,7 @@ const Phone = () => {
   const handleMarkSpamPhone = () => {
     setErrorPhone('');
 
-    const markSpamRequest = axios.post('http://10.10.49.229:3000/api/mark-spam-phone', { type: 'phone', data: phoneinput });
+    const markSpamRequest = axios.post('http://192.168.102.2:3000/api/mark-spam-phone', { type: 'phone', data: phoneinput });
     const flagSpamRequest = axios.put(`https://kavachallapi-production.up.railway.app/phone/flag_spam/${phoneinput}`);
 
     axios.all([markSpamRequest, flagSpamRequest]).then(axios.spread((...responses) => {
@@ -138,7 +138,7 @@ const Phone = () => {
         <View style={styles.resultContainer}>
           <Text style={styles.resultText}>Number: {phoneinput}</Text>
           <Text style={styles.resultText}>Carrier: {phoneresult.carrier !== undefined ? phoneresult.carrier : 'N/A'}</Text>
-          <Text style={styles.resultText}>Spam: {phoneresult.is_spam.toString()}</Text>
+          <Text style={styles.resultText}>Spam: {phoneresult.carrier==="not_found"?"True":phoneresult.spam_marks>20?"True":"False"}</Text>
           <Text style={styles.resultText}>Number of Spam Marks: {phoneresult.spam_marks !== undefined ? phoneresult.spam_marks : 'N/A'}</Text>
           <Text style={styles.resultText}>Origin: {phoneresult.phone_region !== undefined ? phoneresult.phone_region : 'N/A'}</Text>
         </View>
