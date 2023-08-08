@@ -1,107 +1,96 @@
+import { View, StyleSheet, Text, ScrollView , Picker} from 'react-native'
+import { Input } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import React from 'react'
-import { SafeAreaView, StyleSheet, TextInput, Text, Pressable } from 'react-native';
-import { Alchemy, Network } from "alchemy-sdk";
 import { List } from 'react-native-paper';
+import DropdownSelect from './Blockchain/Dmenu';
 const Blockchain = () => {
-  const [text, settext] = React.useState('');
+  const [expanded, setExpanded] = React.useState(true);
   const [data, setdata] = React.useState([]);
   const [loader, setloader] = React.useState(true);
-  const [expanded, setExpanded] = React.useState(true);
-
-  const handlePress = () => setExpanded(!expanded);
-  const config = {
-    apiKey: "tOlngHWvrJYw9XKnkDpJ0P4bLwezfCQI",
-    network: Network.ETH_MAINNET,
-  };
-  const alchemy = new Alchemy(config);
-  const fetchdata = async () => {
+  async function getdata() {
     setloader(true);
-    const data = await alchemy.core.getAssetTransfers({
-      fromBlock: "0x0",
-      fromAddress: text,
-      category: ["external", "internal", "erc20", "erc721", "erc1155"],
+    let headersList = {
+      "Accept": "/",
+      "Authorization": "Bearer cqt_rQMkdq8K9ww6pW8Pt7KYd6cbCdBj"
+    }
+
+    let response = await fetch("https://api.covalenthq.com/v1/cq/covalent/app/bitcoin/transactions/?address=bc1ql49ydapnjafl5t2cp9zqpjwe6pdgmxy98859v2", {
+      method: "GET",
+      headers: headersList
     });
-    console.log(data.transfers);
-    setdata(data.transfers);
-    setloader(false);
+    if (response.ok) {
+      let data = await response.text();
+      data = JSON.parse(data);
+      // console.log(data.data.items);
+      setdata(data.data.items);
+      setloader(false);
+    }
   }
+  const handlePress = () => setExpanded(!expanded);
+
+  const options = [
+    { label: 'Option 1', value: 'option1' },
+    { label: 'Option 2', value: 'option2' },
+    { label: 'Option 3', value: 'option3' },
+  ];
+
   return (
-    <SafeAreaView style={styles.background}>
-      <Text style={styles.title}>Blockchain data</Text>
-      <TextInput
-      style={styles.input}
-      placeholder="Enter Address"
-      value={text}
-      onChangeText={e=>settext(e.target.value)}
+    <View>
+      <Text style={{ textAlign: "center", fontSize: 30, marginTop: 40 }}>Wallet Transactions</Text>
+      <Input
+        style={styles.input}
+        placeholder='Enter Wallet Address'
       />
-      <Pressable style={styles.button} onPress={fetchdata}>
-        <Text style={styles.text}>Search</Text>
-      </Pressable>
-      <List.Section title="Accordions">
-        {
-          loader === true ? "" :
-            data.map((item, idx) => {
-              return (
-                <List.Accordion key={idx}
-                  title={`Amount Send  =  ${item.value}`}
-                  left={props => <List.Icon {...props} icon="" />}
-                  expanded={expanded}
-                  onPress={handlePress}>
-                  <List.Item title={`Asset =  ${item.asset}`} />
-                  <List.Item title={`Block Number =  ${item.blockNum}`} />
-                  <List.Item title={`Receiver =   ${item.to}`} />
-                  <List.Item title={`Amount Send =  ${item.value}`} />
-                  <List.Item title={`Contract Address =  ${item.rawContract.address}`} />
-                </List.Accordion>
-              )
-            })
-        }
-      </List.Section>
-    </SafeAreaView>
-  );
+      <DropdownSelect></DropdownSelect>
+      <Button
+        style={{ width: '100%', margin: 'auto',  }}
+        title="Search"
+        type="solid"
+        onPress={() => {
+          getdata();
+        }}
+      />
+      <ScrollView>
+        <List.Section title="List of Transactions:">
+          {
+            loader === true ? "" :
+              data.map((item, idx) => {
+                return (
+                  <List.Accordion
+                    key={idx}
+                    title={`Transaction value = ${item.value} Satoshi`}
+                    left={props => <List.Icon {...props} icon="" />}
+                    expanded={expanded}
+                    onPress={handlePress}>
+                    <List.Item title={`Transaction hash = ${item.tx_hash}`} />
+                    <List.Item title={`Block hash = ${item.block_hash}`} />
+                  </List.Accordion>
+                )
+              })
+          }
+        </List.Section>
+      </ScrollView>
+    </View>
+  )
 }
 const styles = StyleSheet.create({
+
   input: {
+    marginVertical: 4,
+    marginTop: '20%',
+    marginLeft: 10,
+    marginRight: 10
+  },
+  picker: {
     height: 40,
-    margin: 30,
-    borderWidth: 2,
-    padding: 20,
-    borderRadius: 50
-  },
-  background: {
-    backgroundColor: "white",
     width: '100%',
-    height: '100%'
-  },
-  title: {
-    fontSize: 30,
-    textAlign: "center",
-    marginTop: "20%"
-  },
-  container: {
-    padding: 15,
-  },
-  tableHeader: {
-    backgroundColor: '#DCDCDC',
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 20,
-    elevation: 3,
-    backgroundColor: 'black',
-    width: "50%",
-    marginLeft: "auto",
-    marginRight: "auto"
-  },
-  text: {
-    fontSize: 16,
-    lineHeight: 21,
-    fontWeight: 'bold',
-    letterSpacing: 0.25,
     color: 'white',
-  }
+  },
 });
 export default Blockchain
+
+
+// 0x5c43B1eD97e52d009611D89b74fA829FE4ac56b1
+
+// bc1ql49ydapnjafl5t2cp9zqpjwe6pdgmxy98859v2

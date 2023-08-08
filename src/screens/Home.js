@@ -17,7 +17,7 @@ import BasicCyberCrimes from "./Homescreen/Information";
 import FloatingAIButton from "./Homescreen/ChatbotIcon";
 import Chatbot from "./Chatbot";
 import HowToPreventCybercrime from "./Homescreen/Information2";
-
+import FloatingMenu from "./Homescreen/Botmenu";
 const Home = (props) => {
   const navigation = useNavigation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,13 +53,13 @@ const Home = (props) => {
 
   return (
     <View style={styles.maincontainer}>
-      <FloatingAIButton onPress={navigateToAnotherPage}></FloatingAIButton>
-
+      {/* <FloatingAIButton onPress={navigateToAnotherPage}></FloatingAIButton> */}
+<FloatingMenu></FloatingMenu>
       
       <ScrollView style={styles.scroll}>
-      <TouchableOpacity style={styles.menuButton} onPress={handleOpenMenu}>
+      {/* <TouchableOpacity style={styles.menuButton} onPress={handleOpenMenu}>
         <Text style={styles.menuButtonText}>☰</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       
         <View style={styles.homeTop}>
           <Image
@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     padding: 0,
+    top:45
   },
   headerImage: {
     height: 600,

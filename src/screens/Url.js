@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Pressable,
   FlatList,
-  ScrollView,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import axios from "axios";
@@ -23,9 +22,8 @@ const Url = () => {
 
   const fetchSpamUrls = () => {
     axios
-      .get("http://192.168.0.107:3000/api/get-spam-url")
+      .get("http://192.168.102.2:3000/api/get-spam-url")
       .then((response) => {
-        console.log("Spam URLs:", response.data);
         setSpamUrls(response.data);
       })
       .catch((error) => {
@@ -50,7 +48,7 @@ const Url = () => {
 
   const handleMarkSpamURL = () => {
     axios
-      .post("http://192.168.0.107:3000/api/mark-spam", {
+      .post("http://192.168.102.2:3000/api/mark-spam", {
         type: "url",
         data: inputData,
       })
@@ -112,103 +110,16 @@ const Url = () => {
       ) : null}
       {apiResult && (
         <View style={styles.resultContainer}>
-          <Text style={styles.resultText}>
-            Malware:{" "}
-            {apiResult.malware ? (
-              <>
-                <View style={{ display: "flex", flexDirection: "row" }}>
-                  <AntDesign
-                    style={styles.resultIcon}
-                    name="check"
-                    size={18}
-                    color="red"
-                  />
-                  <Text style={styles.resultText1}>Malware Detected!</Text>
-                </View>
-              </>
-            ) : (
-              <>
-                <View style={{ display: "flex", flexDirection: "row" }}>
-                  <AntDesign
-                    style={styles.resultIcon}
-                    name="close"
-                    size={18}
-                    color="green"
-                  />
-                  <Text style={styles.resultText1}>No Malware Detected!</Text>
-                </View>
-              </>
-            )}
-          </Text>
-          <Text style={styles.resultText}>
-            Phishing: {apiResult.phishing ? (
-              <>
-                <View style={{ display: "flex", flexDirection: "row" }}>
-                  <AntDesign
-                    style={styles.resultIcon}
-                    name="check"
-                    size={18}
-                    color="red"
-                  />
-                  <Text style={styles.resultText1}>Possible Phishing Detected!</Text>
-                </View>
-              </>
-            ) : (
-              <>
-                <View style={{ display: "flex", flexDirection: "row" }}>
-                  <AntDesign
-                    style={styles.resultIcon}
-                    name="close"
-                    size={18}
-                    color="green"
-                  />
-                  <Text style={styles.resultText1}>No Phishing Detected!</Text>
-                </View>
-              </>
-            )}
-          </Text>
-          <Text style={styles.resultText}>
-            Suspicious: {apiResult.suspicious ? (
-              <>
-                <View style={{ display: "flex", flexDirection: "row" }}>
-                  <AntDesign
-                    style={styles.resultIcon}
-                    name="check"
-                    size={18}
-                    color="red"
-                  />
-                  <Text style={styles.resultText1}>Unusual Behaviour Detected!</Text>
-                </View>
-              </>
-            ) : (
-              <>
-                <View style={{ display: "flex", flexDirection: "row" }}>
-                  <AntDesign
-                    style={styles.resultIcon}
-                    name="close"
-                    size={18}
-                    color="green"
-                  />
-                  <Text style={styles.resultText1}>Normal Behaviour!</Text>
-                </View>
-              </>
-            )}
-          </Text>
+          {/* Your API result rendering logic */}
         </View>
       )}
-      <ScrollView
-        style={styles.tableScrollView}
+      <FlatList
+        data={spamUrls}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+        ListHeaderComponent={renderHeader}
         contentContainerStyle={styles.tableContainer}
-      >
-        <View>
-          <FlatList
-            data={spamUrls}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={renderItem}
-            ListHeaderComponent={renderHeader}
-          />
-        </View>
-      </ScrollView>
+      />
     </View>
   );
 };

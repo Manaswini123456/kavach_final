@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, Pressable, ImageBackground, ScrollView, FlatList } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Pressable, ScrollView, FlatList } from 'react-native';
 import axios from 'axios';
 
 const Upi = () => {
@@ -13,9 +13,8 @@ const Upi = () => {
   }, []);
 
   const fetchSpamUPIs = () => {
-    axios.get('http://192.168.0.107:3000/api/get-spam-upi')
+    axios.get('http://192.168.102.2:3000/api/get-spam-upi')
       .then(response => {
-        // console.log('Spam UPIs:', response.data);
         setSpamUPIs(response.data);
       })
       .catch(error => {
@@ -40,14 +39,8 @@ const Upi = () => {
   const handleMarkSpamUPI = () => {
     setErrorUpi('');
 
-    // Request for marking as spam
-    const markSpamRequest = axios.post('http://192.168.0.107:3000/api/mark-spam-upi', { type: 'upi', data: upiinput });
+    // ... (rest of the code for marking as spam)
 
-    // Concurrent requests to flag as ham and spam (replace {upiid} with the actual upi id)
-    const flagHamRequest = axios.put(`https://kavachallapi-production.up.railway.app/upi/flag_ham/${upiinput}`);
-    const flagSpamRequest = axios.put(`https://kavachallapi-production.up.railway.app/upi/flag_spam/${upiinput}`);
-
-    // Send all requests together using axios.all
     axios.all([markSpamRequest, flagHamRequest, flagSpamRequest])
       .then(axios.spread((markSpamResponse, flagHamResponse, flagSpamResponse) => {
         console.log('Spam Marking Response:', markSpamResponse.data);
@@ -60,55 +53,59 @@ const Upi = () => {
       });
   };
 
+  // ... (renderItem, renderHeader, styles definitions)
+
   const renderItem = ({ item, index }) => (
     <View style={styles.tableRow}>
-      <Text style={[styles.tableCell, styles.tableCellIndex , {right:40 , top:10}]}>{index + 1}</Text>
-      <Text style={[styles.tableCell, styles.tableCellData , {right:50 , top:10}]}>{item.data}</Text>
+      <Text style={[styles.tableCell, styles.tableCellIndex, { right: 40, top: 10 }]}>{index + 1}</Text>
+      <Text style={[styles.tableCell, styles.tableCellData, { right: 50, top: 10 }]}>{item.data}</Text>
       <Pressable style={styles.reportButton}>
         <Text style={styles.reportButtonText}>Report</Text>
       </Pressable>
     </View>
   );
 
+  // Function to render the header of the FlatList
   const renderHeader = () => (
     <View style={styles.tableHeader}>
       <Text style={[styles.tableCell, styles.tableHeaderCell]}>S.No.</Text>
       <Text style={[styles.tableCell, styles.tableHeaderCell]}>UPI ID</Text>
-      <Text style={[styles.tableCell, styles.tableHeaderCell , {right:-10}]}>Report</Text>
+      <Text style={[styles.tableCell, styles.tableHeaderCell, { right: -10 }]}>Report</Text>
     </View>
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>FOR UPI RESULTS</Text>
-        <TextInput
-          style={styles.input}
-          value={upiinput}
-          onChangeText={text => setupiInput(text)}
-          placeholder="Enter UPI"
-          placeholderTextColor="#666"
-        />
-        <View style={styles.buttonCont}>
+    <View style={styles.container}>
+      <Text style={styles.title}>FOR UPI RESULTS</Text>
+      <TextInput
+        style={styles.input}
+        value={upiinput}
+        onChangeText={text => setupiInput(text)}
+        placeholder="Enter UPI"
+        placeholderTextColor="#666"
+      />
+      <View style={styles.buttonCont}>
         <Pressable style={styles.button} onPress={upihandle}>
           <Text style={styles.buttonText}>Submit UPI</Text>
         </Pressable>
         <Pressable style={styles.button2} onPress={handleMarkSpamUPI}>
           <Text style={styles.buttonText}>Mark as Spam</Text>
         </Pressable>
+      </View>
+      {error_upi ? (
+        <Text style={styles.errorText}>{error_upi}</Text>
+      ) : null}
+      {upiresult !== null && (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultText}>Name: {upiresult.name !== undefined ? upiresult.name : 'N/A'}</Text>
+          <Text style={styles.resultText}>UPI ID: {upiresult.upi_id}</Text>
+          <Text style={styles.resultText}>Spam_Mark: {upiresult.spam_mark !== undefined ? upiresult.spam_mark : 'N/A'}</Text>
+          <Text style={styles.resultText}>Ham_Mark: {upiresult.ham_mark !== undefined ? upiresult.ham_mark : 'N/A'}</Text>
         </View>
-        {error_upi ? (
-          <Text style={styles.errorText}>{error_upi}</Text>
-        ) : null}
-        {upiresult !== null && (
-          <View style={styles.resultContainer}>
-            <Text style={styles.resultText}>Name: {upiresult.name !== undefined ? upiresult.name : 'N/A'}</Text>
-            <Text style={styles.resultText}>UPI ID: {upiresult.upi_id}</Text>
-            <Text style={styles.resultText}>Spam_Mark: {upiresult.spam_mark !== undefined ? upiresult.spam_mark : 'N/A'}</Text>
-            <Text style={styles.resultText}>Ham_Mark: {upiresult.ham_mark !== undefined ? upiresult.ham_mark : 'N/A'}</Text>
-          </View>
-        )}
+      )}
       
+      {/* Place FlatList directly inside View */}
+      <View style={styles.flatListContainer}>
         <FlatList
           data={spamUPIs}
           keyExtractor={(item, index) => index.toString()}
@@ -117,9 +114,9 @@ const Upi = () => {
           style={styles.tableContainer}
         />
       </View>
-    </ScrollView>
-  )
-}
+    </View>
+  );
+      }
 
 const styles = StyleSheet.create({
   container: {
@@ -270,6 +267,11 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 14,
     fontWeight: "bold",
+  },
+  flatListContainer: {
+    flex: 1, // Use flex to make sure FlatList takes all available space
+    marginTop: 20,
+    backgroundColor: 'white', // Set background color if needed
   },
 });
 

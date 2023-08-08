@@ -14,9 +14,9 @@ const Message_header = () => {
   }, []);
 
   const fetchSpamHeaders = () => {
-    axios.get('http://192.168.0.107:3000/api/get-spam-header')
+    axios.get('http://192.168.102.2:3000/api/get-spam-header')
       .then(response => {
-        console.log('Spam Headers:', response.data);
+        // console.log('Spam Headers:', response.data);
         const headerValues = response.data.map(item => item.data);
         setSpamUrls(headerValues);
       })
@@ -53,7 +53,7 @@ const Message_header = () => {
     setErrorHeader('');
 
     // Request for marking as spam
-    const markSpamRequest_Header = axios.post('http://192.168.0.107:3000/api/mark-spam-header', { type: 'header', data: headerinput });
+    const markSpamRequest_Header = axios.post('http://192.168.102.2:3000/api/mark-spam-header', { type: 'header', data: headerinput });
     const flagSpamRequest_Header = axios.put(`https://kavachallapi-production.up.railway.app/sms_header/flag_spam/${headerinput}`);
 
     axios.all([markSpamRequest_Header, flagSpamRequest_Header]).then(axios.spread((...responses) => {
@@ -81,60 +81,56 @@ const Message_header = () => {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>FOR SMS HEADERS</Text>
-        <TextInput
-          style={styles.input}
-          value={headerinput}
-          onChangeText={text => setheaderInput(text)}
-          placeholder="Enter Header"
-          placeholderTextColor="#666"
-        />
-        <TextInput
-          style={styles.input}
-          value={mess_header_input}
-          onChangeText={text => setmess_header_input(text)}
-          placeholder="Enter Message"
-          placeholderTextColor="#666"
-        />
-        <View style={styles.buttonCont}>
+    <View style={styles.container}>
+      <Text style={styles.title}>FOR SMS HEADERS</Text>
+      <TextInput
+        style={styles.input}
+        value={headerinput}
+        onChangeText={text => setheaderInput(text)}
+        placeholder="Enter Header"
+        placeholderTextColor="#666"
+      />
+      <TextInput
+        style={styles.input}
+        value={mess_header_input}
+        onChangeText={text => setmess_header_input(text)}
+        placeholder="Enter Message"
+        placeholderTextColor="#666"
+      />
+      <View style={styles.buttonCont}>
         <Pressable style={styles.button} onPress={headerhandle}>
           <Text style={styles.buttonText}>Submit Header</Text>
         </Pressable>
         <Pressable style={styles.button2} onPress={handleMarkSpamHeader}>
           <Text style={styles.buttonText}>Mark as Spam</Text>
         </Pressable>
-        </View>
-        
-        {error_header ? (
-          <Text style={styles.errorText}>{error_header}</Text>
-        ) : null}
-        {headerresult !== null && (
-          <View style={styles.resultContainer}>
-            <Text style={styles.resultText}>Name: {headerresult.name !== undefined ? headerresult.name : 'N/A'}</Text>
-            <Text style={styles.resultText}>Spam: {headerresult.is_spam !== undefined ? (headerresult.is_spam ? 'Yes' : 'No') : 'N/A'}</Text>
-            <Text style={styles.resultText}>Number of spam: {headerresult.number_of_spam_marks !== undefined ? headerresult.number_of_spam_marks : 'N/A'}</Text>
-          </View>
-        )}
-
-   
-
-        {/* Table to show the spam headers */}
-        <View style={styles.tableContainer}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.tableCell, styles.tableHeaderCell]}>Header</Text>
-            <Text style={[styles.tableCell, styles.tableHeaderCell]}>S.No.</Text>
-            <Text style={[styles.tableCell, styles.tableHeaderCell , {right:-10}]}>Report</Text>
-          </View>
-          <FlatList
-            data={spamUrls}
-            renderItem={renderTableItem}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        </View>
       </View>
-    </ScrollView>
+
+      {error_header ? (
+        <Text style={styles.errorText}>{error_header}</Text>
+      ) : null}
+      {headerresult !== null && (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultText}>Name: {headerresult.name !== undefined ? headerresult.name : 'N/A'}</Text>
+          <Text style={styles.resultText}>Spam: {headerresult.is_spam !== undefined ? (headerresult.is_spam ? 'Yes' : 'No') : 'N/A'}</Text>
+          <Text style={styles.resultText}>Number of spam: {headerresult.number_of_spam_marks !== undefined ? headerresult.number_of_spam_marks : 'N/A'}</Text>
+        </View>
+      )}
+
+      {/* Table to show the spam headers */}
+      <View style={styles.tableContainer}>
+        <View style={styles.tableHeader}>
+          <Text style={[styles.tableCell, styles.tableHeaderCell]}>Header</Text>
+          <Text style={[styles.tableCell, styles.tableHeaderCell]}>S.No.</Text>
+          <Text style={[styles.tableCell, styles.tableHeaderCell , {right:-10}]}>Report</Text>
+        </View>
+        <FlatList
+          data={spamUrls}
+          renderItem={renderTableItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
+      </View>
+    </View>
   );
 };
 

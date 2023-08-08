@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, Pressable, FlatList, ScrollView } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Pressable, FlatList } from 'react-native';
 import axios from 'axios';
 
 const Message = () => {
@@ -13,9 +13,9 @@ const Message = () => {
   }, []);
 
   const fetchSpamMessages = () => {
-    axios.get('http://192.168.0.107:3000/api/get-spam-message')
+    axios.get('http://192.168.102.2:3000/api/get-spam-message')
       .then(response => {
-        console.log('Spam Messages:', response.data);
+        // console.log('Spam Messages:', response.data);
         setSpamMessage(response.data);
       })
       .catch(error => {
@@ -38,7 +38,7 @@ const Message = () => {
   };
 
   const handleMarkSpamMessage = () => {
-    axios.post('http://192.168.0.107:3000/api/mark-spam-message', { type: 'message', data: inputmessage })
+    axios.post('http://192.168.102.2:3000/api/mark-spam-message', { type: 'message', data: inputmessage })
       .then(response => {
         console.log('Spam Marking Response:', response.data);
         fetchSpamMessages(); // Refresh the spam messages list after marking as spam
@@ -67,45 +67,43 @@ const Message = () => {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>FOR MESSAGES</Text>
-        <TextInput
-          style={styles.input}
-          value={inputmessage}
-          onChangeText={text => setInputMessage(text)}
-          placeholder="Enter message"
-          placeholderTextColor="#666"
-        />
-        <View style={styles.buttonCont}>
+    <View style={styles.container}>
+      <Text style={styles.title}>FOR MESSAGES</Text>
+      <TextInput
+        style={styles.input}
+        value={inputmessage}
+        onChangeText={text => setInputMessage(text)}
+        placeholder="Enter message"
+        placeholderTextColor="#666"
+      />
+      <View style={styles.buttonCont}>
         <Pressable style={styles.button} onPress={messagehandle}>
           <Text style={styles.buttonText}>Submit Message</Text>
         </Pressable>
         <Pressable style={styles.button2} onPress={handleMarkSpamMessage}>
           <Text style={styles.buttonText}>Mark as Spam</Text>
         </Pressable>
-        </View>
-        
-        {error_for_mess ? (
-          <Text style={styles.errorText}>{error_for_mess}</Text>
-        ) : null}
-        {messageResult !== null && (
-          <View style={styles.resultContainer}>
-            <Text style={styles.resultText}>Spam: {messageResult.result !== undefined ? (messageResult.result ? 'Yes' : 'No') : 'N/A'}</Text>
-          </View>
-        )}
-      
-        <FlatList
-          data={spammessage}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={renderItem}
-          ListHeaderComponent={renderHeader}
-          style={styles.tableContainer}
-        />
       </View>
-    </ScrollView>
-  )
-}
+
+      {error_for_mess ? (
+        <Text style={styles.errorText}>{error_for_mess}</Text>
+      ) : null}
+      {messageResult !== null && (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultText}>Spam: {messageResult.result !== undefined ? (messageResult.result ? 'Yes' : 'No') : 'N/A'}</Text>
+        </View>
+      )}
+
+      <FlatList
+        data={spammessage}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+        ListHeaderComponent={renderHeader}
+        style={styles.tableContainer}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

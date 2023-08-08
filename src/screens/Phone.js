@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, Text, StyleSheet, Pressable, ImageBackground, ScrollView, FlatList } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Pressable, ImageBackground, FlatList } from 'react-native';
 import axios from 'axios';
 
 const Phone = () => {
   const [phoneinput, setphoneInput] = useState('');
   const [phoneresult, setphoneResult] = useState(null);
   const [error_phone, setErrorPhone] = useState('');
-  const [spamPhone, setSpamPhone] = useState([])
+  const [spamPhone, setSpamPhone] = useState([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchSpamPhone();
-  },[]);
+  }, []);
 
   const fetchSpamPhone = () => {
-    axios.get('http://192.168.0.107:3000/api/get-spam-phone').then(response=>{
-      setSpamPhone(response.data);
-    }).catch(error=>{
-      console.error('Error fetching spam phone numbers:', error);
-    });
-  }
+    axios.get('http://192.168.102.2:3000/api/get-spam-phone')
+      .then(response => {
+        setSpamPhone(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching spam phone numbers:', error);
+      });
+  };
 
   const phonehandle = () => {
     setErrorPhone('');
@@ -37,9 +39,7 @@ const Phone = () => {
   const handleMarkSpamPhone = () => {
     setErrorPhone('');
 
-    // Request for marking as spam
-    const markSpamRequest = axios.post('http://192.168.0.107:3000/api/mark-spam-phone', { type: 'phone', data: phoneinput });
-
+    const markSpamRequest = axios.post('http://192.168.102.2:3000/api/mark-spam-phone', { type: 'phone', data: phoneinput });
     const flagSpamRequest = axios.put(`https://kavachallapi-production.up.railway.app/phone/flag_spam/${phoneinput}`);
 
     axios.all([markSpamRequest, flagSpamRequest]).then(axios.spread((...responses) => {
@@ -58,8 +58,8 @@ const Phone = () => {
 
   const renderItem = ({ item, index }) => (
     <View style={styles.tableRow}>
-      <Text style={[styles.tableCell, styles.tableCellIndex , {right:35 , top:10}]}>{index + 1}</Text>
-      <Text style={[styles.tableCell, styles.tableCellData , {right:55 , top:10}]}>{item.data}</Text>
+      <Text style={[styles.tableCell, styles.tableCellIndex, { right: 35, top: 10 }]}>{index + 1}</Text>
+      <Text style={[styles.tableCell, styles.tableCellData, { right: 55, top: 10 }]}>{item.data}</Text>
       <Pressable style={styles.reportButton}>
         <Text style={styles.reportButtonText}>Report</Text>
       </Pressable>
@@ -70,55 +70,51 @@ const Phone = () => {
     <View style={styles.tableHeader}>
       <Text style={[styles.tableCell, styles.tableHeaderCell]}>S.No.</Text>
       <Text style={[styles.tableCell, styles.tableHeaderCell]}>Phone Number</Text>
-      <Text style={[styles.tableCell, styles.tableHeaderCell , {right:-10}] }>Report</Text>
+      <Text style={[styles.tableCell, styles.tableHeaderCell, { right: -10 }]}>Report</Text>
     </View>
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-      <View style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>FOR PHONE NUMBERS</Text>
-        <TextInput
-            style={styles.input}
-            value={phoneinput}
-            onChangeText={text => setphoneInput(text)}
-            placeholder="Enter Phone Number"
-            placeholderTextColor="#666"
-          />
-          <View style={styles.buttonCont}>
-          <Pressable style={styles.button} onPress={phonehandle} >
-            <Text style={styles.buttonText}>Check Number</Text>
-          </Pressable>
-          <Pressable style={styles.button2} onPress={handleMarkSpamPhone} >
-            <Text style={styles.buttonText}>Mark as Spam</Text>
-          </Pressable>
-          </View>
-          
-          {error_phone ? (
-            <Text style={styles.errorText}>{error_phone}</Text>
-          ) : null}
-          {phoneresult !== null && (
-            <View style={styles.resultContainer}>
-              <Text style={styles.resultText}>Number: {phoneinput}</Text>
-              <Text style={styles.resultText}>Carrier: {phoneresult.carrier !== undefined ? phoneresult.carrier : 'N/A'}</Text>
-              <Text style={styles.resultText}>Spam: {phoneresult.is_spam.toString()}</Text>
-              <Text style={styles.resultText}>Number of Spam Marks: {phoneresult.spam_marks !== undefined ? phoneresult.spam_marks : 'N/A'}</Text>
-              <Text style={styles.resultText}>Origin: {phoneresult.phone_region !== undefined ? phoneresult.phone_region : 'N/A'}</Text>
-            </View>
-          )}
-       
-
-          {/* Table to display spam marked phone numbers */}
-          <FlatList
-            data={spamPhone}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={renderItem}
-            ListHeaderComponent={renderHeader}
-            style={[styles.tableContainer]}
-          />
+      <TextInput
+        style={styles.input}
+        value={phoneinput}
+        onChangeText={text => setphoneInput(text)}
+        placeholder="Enter Phone Number"
+        placeholderTextColor="#666"
+      />
+      <View style={styles.buttonCont}>
+        <Pressable style={styles.button} onPress={phonehandle}>
+          <Text style={styles.buttonText}>Check Number</Text>
+        </Pressable>
+        <Pressable style={styles.button2} onPress={handleMarkSpamPhone}>
+          <Text style={styles.buttonText}>Mark as Spam</Text>
+        </Pressable>
       </View>
-    </ScrollView>
-  )
+
+      {error_phone ? (
+        <Text style={styles.errorText}>{error_phone}</Text>
+      ) : null}
+      {phoneresult !== null && (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultText}>Number: {phoneinput}</Text>
+          <Text style={styles.resultText}>Carrier: {phoneresult.carrier !== undefined ? phoneresult.carrier : 'N/A'}</Text>
+          <Text style={styles.resultText}>Spam: {phoneresult.is_spam.toString()}</Text>
+          <Text style={styles.resultText}>Number of Spam Marks: {phoneresult.spam_marks !== undefined ? phoneresult.spam_marks : 'N/A'}</Text>
+          <Text style={styles.resultText}>Origin: {phoneresult.phone_region !== undefined ? phoneresult.phone_region : 'N/A'}</Text>
+        </View>
+      )}
+
+      <FlatList
+        data={spamPhone}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+        ListHeaderComponent={renderHeader}
+        style={[styles.tableContainer]}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

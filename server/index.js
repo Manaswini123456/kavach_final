@@ -6,7 +6,7 @@ const app = express();
 const PORT = 3000;
 
 // Connect to MongoDB
-mongoose.connect('mongodb://0.0.0.0/spam_by_user', {
+mongoose.connect('mongodb+srv://root:root@cluster0.qcoffss.mongodb.net/KAVACH_SPAM', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
@@ -30,15 +30,20 @@ app.use(cors());
 app.post('/api/mark-spam', async (req, res) => {
   const { type, data } = req.body;
   try {
+    const existingData = await SpamModel.findOne({ type, data });
+    if (existingData) {
+      return res.json({ success: false, message: 'Data is already marked as spam.' });
+    }
+    
     const spamData = new SpamModel({
       type,
       data,
       spam: true,
     });
     await spamData.save();
-    res.json({ success: true, message: 'URL marked as spam and stored in the database.' });
+    res.json({ success: true, message: 'Data marked as spam and stored in the database.' });
   } catch (error) {
-    console.error('Error storing spam URL:', error);
+    console.error('Error storing spam data:', error);
     res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
   }
 });
@@ -46,47 +51,62 @@ app.post('/api/mark-spam', async (req, res) => {
 app.post('/api/mark-spam-message', async (req, res) => {
   const { type, data } = req.body;
   try {
+    const existingData = await SpamModel.findOne({ type, data });
+    if (existingData) {
+      return res.json({ success: false, message: 'Data is already marked as spam.' });
+    }
+    
     const spamData = new SpamModel({
       type,
       data,
       spam: true,
     });
     await spamData.save();
-    res.json({ success: true, message: 'Message marked as spam and stored in the database.' });
+    res.json({ success: true, message: 'Data marked as spam and stored in the database.' });
   } catch (error) {
-    console.error('Error storing spam Message:', error);
+    console.error('Error storing spam data:', error);
     res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
   }
 });
 
 app.post('/api/mark-spam-upi', async (req, res) => {
   const { type, data } = req.body;
-  try {
+  try{
+    const existingData = await SpamModel.findOne({ type, data });
+    if (existingData) {
+      return res.json({ success: false, message: 'Data is already marked as spam.' });
+    }
+    
     const spamData = new SpamModel({
       type,
       data,
       spam: true,
     });
     await spamData.save();
-    res.json({ success: true, message: 'UPI marked as spam and stored in the database.' });
-  } catch (error) {
-    console.error('Error storing spam UPI:', error);
+    res.json({ success: true, message: 'Data marked as spam and stored in the database.' });
+  }catch (error) {
+    console.error('Error storing spam data:', error);
     res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
   }
 });
 
 app.post('/api/mark-spam-phone', async (req, res) => {
   const { type, data } = req.body;
-  try {
+  try{
+    const existingData = await SpamModel.findOne({ type, data });
+    if (existingData) {
+      return res.json({ success: false, message: 'Data is already marked as spam.' });
+    }
+    
     const spamData = new SpamModel({
       type,
       data,
       spam: true,
     });
     await spamData.save();
-    res.json({ success: true, message: 'Phone number marked as spam and stored in the database.' });
-  } catch (error) {
-    console.error('Error storing spam Phone number:', error);
+    res.json({ success: true, message: 'Data marked as spam and stored in the database.' });
+  }catch (error) {
+    console.error('Error storing spam data:', error);
     res.status(500).json({ success: false, message: 'Something went wrong. Please try again.' });
   }
 });
