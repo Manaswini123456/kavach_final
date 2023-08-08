@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, Pressable, FlatList } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Pressable, FlatList, Modal,
+  TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import Loader from "./Loader";
 
@@ -11,6 +12,8 @@ const Message = () => {
   const [inputmessage, setInputMessage] = useState('');
   const [error_for_mess, setErrorForMess] = useState('');
   const [spammessage, setSpamMessage] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
 
   useEffect(() => {
     fetchSpamMessages();
@@ -26,7 +29,9 @@ const Message = () => {
         console.error('Error fetching spam Messages:', error);
       });
   };
-
+  const handleButtonClick = () => {
+    setModalVisible(true);
+  }
   const messagehandle = () => {
     setIsLoading(true);
 
@@ -95,11 +100,32 @@ const Message = () => {
         <Pressable style={styles.button} onPress={messagehandle}>
           <Text style={styles.buttonText}>Submit Message</Text>
         </Pressable>
-        <Pressable style={styles.button2} onPress={handleMarkSpamMessage}>
+        <Pressable style={styles.button2} onPress={() => {handleButtonClick()}}>
           <Text style={styles.buttonText}>Mark as Spam</Text>
         </Pressable>
       </View>
-
+      <Modal
+      visible={modalVisible}
+      animationType="slide"
+      transparent={true}
+      // onRequestClose={onClose}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>Are you sure?</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText} onPress={() => {handleMarkSpamMessage();
+              setModalVisible(false)
+              }}>Continue</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText} onPress={()=>{setModalVisible(false)}}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
       {error_for_mess ? (
         <Text style={styles.errorText}>{error_for_mess}</Text>
       ) : null}
@@ -267,23 +293,56 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   reportButton: {
-    paddingVertical: 9,
+    paddingVertical: 0,
     paddingHorizontal: 16,
     borderRadius: 5,
     elevation: 3,
     backgroundColor: "#007BFF",
     position: "relative",
     right: 10,
-    height:"40%",
+    height:40,
     display:"flex",
     justifyContent:"center",
     alignItems:"center",
-    top:30
+    top:10
   },
   reportButtonText: {
     color: "white",
     fontSize: 14,
     fontWeight: "bold",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: 300,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    backgroundColor: '#007BFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    width: '45%',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, Text, StyleSheet, Pressable, ImageBackground, FlatList } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Pressable, ImageBackground, FlatList , Modal,
+  TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import Loader from "./Loader";
 
@@ -11,7 +12,7 @@ const Phone = () => {
   const [phoneresult, setphoneResult] = useState(null);
   const [error_phone, setErrorPhone] = useState('');
   const [spamPhone, setSpamPhone] = useState([]);
-
+  const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     fetchSpamPhone();
   }, []);
@@ -45,6 +46,9 @@ const Phone = () => {
 
       });
   };
+  const handleButtonClick = () => {
+    setModalVisible(true);
+  }
 
   const handleMarkSpamPhone = () => {
     setErrorPhone('');
@@ -100,11 +104,33 @@ const Phone = () => {
         <Pressable style={styles.button} onPress={phonehandle}>
           <Text style={styles.buttonText}>Check Number</Text>
         </Pressable>
-        <Pressable style={styles.button2} onPress={handleMarkSpamPhone}>
+        <Pressable style={styles.button2} onPress={()=>{handleButtonClick()}}>
           <Text style={styles.buttonText}>Mark as Spam</Text>
         </Pressable>
       </View>
-
+      <Modal
+      visible={modalVisible}
+      animationType="slide"
+      transparent={true}
+      // onRequestClose={onClose}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>Are you sure?</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText} onPress={() => {handleMarkSpamPhone();
+              setModalVisible(false)
+              phonehandle()
+              }}>Continue</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText} onPress={()=>{setModalVisible(false)}}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
       {error_phone ? (
         <Text style={styles.errorText}>{error_phone}</Text>
       ) : null}
@@ -278,6 +304,39 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 14,
     fontWeight: "bold",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: 300,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    backgroundColor: '#007BFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    width: '45%',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
   },
 })
 

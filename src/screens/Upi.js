@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, Pressable, ScrollView, FlatList } from 'react-native';
+import { View, TextInput, Text, StyleSheet, Pressable, ScrollView, FlatList , Modal,
+  TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import Loader from './Loader';
 const Upi = () => {
@@ -9,6 +10,7 @@ const Upi = () => {
   const [upiresult, setupiResult] = useState(null);
   const [error_upi, setErrorUpi] = useState('');
   const [spamUPIs, setSpamUPIs] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     fetchSpamUPIs();
@@ -43,12 +45,20 @@ const Upi = () => {
 
       });
   };
-
+const handleButtonClick = () => {
+    setModalVisible(true);
+  }
   const handleMarkSpamUPI = () => {
     setErrorUpi('');
 
-    // ... (rest of the code for marking as spam)
+    // Request for marking as spam
+    const markSpamRequest = axios.post('http://10.10.49.229:3000/api/mark-spam-upi', { type: 'upi', data: upiinput });
 
+    // Concurrent requests to flag as ham and spam (replace {upiid} with the actual upi id)
+    const flagHamRequest = axios.put(`https://kavachallapi-production.up.railway.app/upi/flag_ham/${upiinput}`);
+    const flagSpamRequest = axios.put(`https://kavachallapi-production.up.railway.app/upi/flag_spam/${upiinput}`);
+
+    // Send all requests together using axios.all
     axios.all([markSpamRequest, flagHamRequest, flagSpamRequest])
       .then(axios.spread((markSpamResponse, flagHamResponse, flagSpamResponse) => {
         console.log('Spam Marking Response:', markSpamResponse.data);
@@ -60,6 +70,7 @@ const Upi = () => {
         console.error('Error in one or more requests:', errors);
       });
   };
+
 
   // ... (renderItem, renderHeader, styles definitions)
 
@@ -99,9 +110,31 @@ const Upi = () => {
           <Text style={styles.buttonText}>Submit UPI</Text>
         </Pressable>
         <Pressable style={styles.button2} onPress={handleMarkSpamUPI}>
-          <Text style={styles.buttonText}>Mark as Spam</Text>
+          <Text style={styles.buttonText} onPress={()=>{handleButtonClick()}}>Mark as Spam</Text>
         </Pressable>
       </View>
+       <Modal
+      visible={modalVisible}
+      animationType="slide"
+      transparent={true}
+      // onRequestClose={onClose}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>Are you sure?</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText} onPress={() => {handleMarkSpamUPI();
+              setModalVisible(false)
+              }}>Continue</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText} onPress={()=>{setModalVisible(false)}}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
       {error_upi ? (
         <Text style={styles.errorText}>{error_upi}</Text>
       ) : null}
@@ -282,6 +315,39 @@ const styles = StyleSheet.create({
     flex: 1, // Use flex to make sure FlatList takes all available space
     marginTop: 20,
     backgroundColor: 'white', // Set background color if needed
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: 300,
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    backgroundColor: '#007BFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    width: '45%',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 
