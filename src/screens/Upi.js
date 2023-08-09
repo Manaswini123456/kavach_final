@@ -17,7 +17,7 @@ const Upi = () => {
   }, []);
 
   const fetchSpamUPIs = () => {
-    axios.get('http://192.168.102.2:3000/api/get-spam-upi')
+    axios.get('http://10.10.49.229:3000/api/get-spam-upi')
       .then(response => {
         setSpamUPIs(response.data);
       })
@@ -52,7 +52,7 @@ const handleButtonClick = () => {
     setErrorUpi('');
 
     // Request for marking as spam
-    const markSpamRequest = axios.post('http://192.168.102.2:3000/api/mark-spam-upi', { type: 'upi', data: upiinput });
+    const markSpamRequest = axios.post('http://10.10.49.229:3000/api/mark-spam-upi', { type: 'upi', data: upiinput });
 
     // Concurrent requests to flag as ham and spam (replace {upiid} with the actual upi id)
     const flagHamRequest = axios.put(`https://kavachallapi-production.up.railway.app/upi/flag_ham/${upiinput}`);

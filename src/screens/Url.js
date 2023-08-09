@@ -36,7 +36,7 @@ const Url = ({navigation}) => {
 
     
     axios
-      .get("http://192.168.102.2:3000/api/get-spam-url")
+      .get("http://10.10.49.229:3000/api/get-spam-url")
       .then((response) => {
         // console.log("Spam URLs:", response.data);
         setSpamUrls(response.data);
@@ -68,7 +68,7 @@ const Url = ({navigation}) => {
 
   const handleMarkSpamURL = () => {
     axios
-      .post("http://192.168.102.2:3000/api/mark-spam", {
+      .post("http://10.10.49.229:3000/api/mark-spam", {
         type: "url",
         data: inputData,
       })

@@ -18,7 +18,7 @@ const Message_header = () => {
   }, []);
 
   const fetchSpamHeaders = () => {
-    axios.get('http://192.168.102.2:3000/api/get-spam-header')
+    axios.get('http://10.10.49.229:3000/api/get-spam-header')
       .then(response => {
         // console.log('Spam Headers:', response.data);
         const headerValues = response.data.map(item => item.data);
@@ -63,7 +63,7 @@ const Message_header = () => {
     setErrorHeader('');
 
     // Request for marking as spam
-    const markSpamRequest_Header = axios.post('http://192.168.102.2:3000/api/mark-spam-header', { type: 'header', data: headerinput });
+    const markSpamRequest_Header = axios.post('http://10.10.49.229:3000/api/mark-spam-header', { type: 'header', data: headerinput });
     const flagSpamRequest_Header = axios.put(`https://kavachallapi-production.up.railway.app/sms_header/flag_spam/${headerinput}`);
 
     axios.all([markSpamRequest_Header, flagSpamRequest_Header]).then(axios.spread((...responses) => {

@@ -17,7 +17,7 @@ const Report_url = () => {
 
   const fetchUrlsFromApi = async () => {
     try {
-      const response = await fetch('http://192.168.102.2:3000/api/get-spam-url');
+      const response = await fetch('http://10.10.49.229:3000/api/get-spam-url');
       const data = await response.json();
       setUrlsFromApi(data.urls);
     } catch (error) {
@@ -36,7 +36,7 @@ const Report_url = () => {
     };
 
     try {
-      const response = await fetch('http://192.168.102.2:3000/submit', {
+      const response = await fetch('http://10.10.49.229:3000/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

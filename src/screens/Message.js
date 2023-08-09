@@ -20,7 +20,7 @@ const Message = () => {
   }, []);
 
   const fetchSpamMessages = () => {
-    axios.get('http://192.168.102.2:3000/api/get-spam-message')
+    axios.get('http://10.10.49.229:3000/api/get-spam-message')
       .then(response => {
         // console.log('Spam Messages:', response.data);
         setSpamMessage(response.data);
@@ -55,7 +55,7 @@ const Message = () => {
   };
 
   const handleMarkSpamMessage = () => {
-    axios.post('http://192.168.102.2:3000/api/mark-spam-message', { type: 'message', data: inputmessage })
+    axios.post('http://10.10.49.229:3000/api/mark-spam-message', { type: 'message', data: inputmessage })
       .then(response => {
         console.log('Spam Marking Response:', response.data);
         fetchSpamMessages(); // Refresh the spam messages list after marking as spam

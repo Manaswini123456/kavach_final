@@ -2,23 +2,35 @@ import React, { useEffect, useState } from 'react';
 import { View, TextInput, Text, StyleSheet, Pressable, ImageBackground, FlatList , Modal,
   TouchableOpacity } from 'react-native';
 import axios from 'axios';
-import Loader from "./Loader";
+import Loader from "./Loader"; 
+import CallDetectionManager from 'react-native-call-detection';
+
 
 
 const Phone = () => {
   const [isLoading, setIsLoading] = useState(false);
-
+  const [callState, setCallState] = useState(null);
   const [phoneinput, setphoneInput] = useState('');
   const [phoneresult, setphoneResult] = useState(null);
   const [error_phone, setErrorPhone] = useState('');
   const [spamPhone, setSpamPhone] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false); 
+  const [modalVisible2, setModalVisible2] = useState(false); 
+
+  
   useEffect(() => {
     fetchSpamPhone();
+    const callDetection = new CallDetectionManager((event) => {
+      setCallState(event);
+    });
+
+    return () => {
+      callDetection.dispose();
+    };
   }, []);
 
   const fetchSpamPhone = () => {
-    axios.get('http://192.168.102.2:3000/api/get-spam-phone')
+    axios.get('http://10.10.49.229:3000/api/get-spam-phone')
       .then(response => {
         setSpamPhone(response.data);
       })
@@ -49,11 +61,15 @@ const Phone = () => {
   const handleButtonClick = () => {
     setModalVisible(true);
   }
+  const handleButtonClick2 = () => {
+    setModalVisible2(true);
+  }
+
 
   const handleMarkSpamPhone = () => {
     setErrorPhone('');
 
-    const markSpamRequest = axios.post('http://192.168.102.2:3000/api/mark-spam-phone', { type: 'phone', data: phoneinput });
+    const markSpamRequest = axios.post('http://10.10.49.229:3000/api/mark-spam-phone', { type: 'phone', data: phoneinput });
     const flagSpamRequest = axios.put(`https://kavachallapi-production.up.railway.app/phone/flag_spam/${phoneinput}`);
 
     axios.all([markSpamRequest, flagSpamRequest]).then(axios.spread((...responses) => {
@@ -69,6 +85,29 @@ const Phone = () => {
       setErrorPhone('Something went wrong. Please try again.');
     });
   }
+  
+  const handleMarkHamPhone = () => {
+    setErrorPhone('');
+
+    // const markSpamRequest = axios.post('http://10.10.49.229:3000/api/mark-spam-phone', { type: 'phone', data: phoneinput });
+    const flagSpamRequest = axios.put(`https://kavachallapi-production.up.railway.app/phone/flag_ham/${phoneinput}`);
+
+    axios.all([ flagSpamRequest]).then(axios.spread((...responses) => {
+      // const markSpamResponse = responses[0];
+      const flagSpamResponse = responses[1];
+
+      // console.log('Mark Spam Response:', markSpamResponse.data);
+      console.log('Flag Spam Response:', flagSpamResponse.data);
+
+      fetchSpamPhone();
+    })).catch(errors => {
+      // console.error('Error marking phone number as spam:', errors);
+      // setErrorPhone('Something went wrong. Please try again.');
+    });
+  }
+
+
+  
 
   const renderItem = ({ item, index }) => (
     <View style={styles.tableRow}>
@@ -92,7 +131,7 @@ const Phone = () => {
     <View style={styles.container}>
       {isLoading && <Loader />}
 
-      <Text style={styles.title}>FOR PHONE NUMBERS</Text>
+      <Text style={styles.title}>FOR PHONE NUMBERS {callState}</Text>
       <TextInput
         style={styles.input}
         value={phoneinput}
@@ -100,14 +139,20 @@ const Phone = () => {
         placeholder="Enter Phone Number"
         placeholderTextColor="#666"
       />
-      <View style={styles.buttonCont}>
-        <Pressable style={styles.button} onPress={phonehandle}>
-          <Text style={styles.buttonText}>Check Number</Text>
+      <Pressable style={[styles.button , {width:"100%"} ]} onPress={phonehandle}>
+          <Text style={[styles.buttonText , {fontSize:18 ,top : 0 , width:"100%"}]}>Check Number</Text>
         </Pressable>
+      <View style={styles.buttonCont}>
+        
         <Pressable style={styles.button2} onPress={()=>{handleButtonClick()}}>
           <Text style={styles.buttonText}>Mark as Spam</Text>
         </Pressable>
+        <Pressable style={[styles.button2 ,{backgroundColor:"green"}]} onPress={()=>{handleButtonClick2()}}>
+          <Text style={[styles.buttonText ]}>Mark as Ham</Text>
+        </Pressable>
+        
       </View>
+      
       <Modal
       visible={modalVisible}
       animationType="slide"
@@ -131,6 +176,29 @@ const Phone = () => {
         </View>
       </View>
     </Modal>
+    <Modal
+      visible={modalVisible2}
+      animationType="slide"
+      transparent={true}
+      // onRequestClose={onClose}
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>Are you sure?</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText} onPress={() => {handleMarkHamPhone();
+              setModalVisible2(false)
+              phonehandle()
+              }}>Continue</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} >
+              <Text style={styles.buttonText} onPress={()=>{setModalVisible2(false)}}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
       {error_phone ? (
         <Text style={styles.errorText}>{error_phone}</Text>
       ) : null}
@@ -138,7 +206,7 @@ const Phone = () => {
         <View style={styles.resultContainer}>
           <Text style={styles.resultText}>Number: {phoneinput}</Text>
           <Text style={styles.resultText}>Carrier: {phoneresult.carrier !== undefined ? phoneresult.carrier : 'N/A'}</Text>
-          <Text style={styles.resultText}>Spam: {phoneresult.carrier==="not_found"?"True":phoneresult.spam_marks>20?"True":"False"}</Text>
+          <Text style={styles.resultText}>Spam: {phoneresult.carrier==="not_found"?"True":phoneresult.spam_marks>0?(phoneresult.spam_marks/phoneresult.ham_marks)>1.5?"True":"False":"False"}</Text>
           <Text style={styles.resultText}>Number of Spam Marks: {phoneresult.spam_marks !== undefined ? phoneresult.spam_marks : 'N/A'}</Text>
           <Text style={styles.resultText}>Origin: {phoneresult.phone_region !== undefined ? phoneresult.phone_region : 'N/A'}</Text>
         </View>
@@ -204,9 +272,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 5,
 
-    marginTop: 0,
+    marginTop: 10,
     fontWeight: "bold",
-    marginLeft: 15,
+    marginLeft: 5,
   },
   buttonText: {
     color: "white",

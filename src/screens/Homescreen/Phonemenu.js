@@ -12,6 +12,7 @@ import Message from '../Message';
 import Upi from '../Upi';
 import Message_header from '../Message_header';
 import Blockchain from '../Blockchain';
+import Scanner from '../scanner';
 
 const Phonemenu = () => {
   const navigation = useNavigation();
@@ -62,6 +63,14 @@ const Phonemenu = () => {
       <TouchableOpacity style={styles.box} onPress={() => navigateToPage(Message_header)}>
       <MaterialIcons name="sms" size={40} color="#112244" />
         <Text style={styles.boxText}>Header Checker</Text>
+      </TouchableOpacity> 
+      
+    
+      </View>
+      <View style={styles.boxRow}>
+      <TouchableOpacity style={styles.box} onPress={() => navigateToPage(Scanner)}>
+      <Entypo name="database" size={40} color="#112244" />
+        <Text style={styles.boxText}>UPI  Scanner</Text>
       </TouchableOpacity>
     
       </View>

@@ -3,7 +3,7 @@ import React from 'react';
 import Home from '../screens/Home';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import Scanner from '../screens/scanner';
 import News from '../screens/News';
 
 import Contact from '../screens/Contact';
@@ -129,6 +129,16 @@ function UserStack() {
             fontSize: 20,
           },
           headerTitle: 'UPI',
+          headerTitleAlign: 'center',
+        }}/>
+        <Stack.Screen
+        name='Scanner'
+        component={Scanner}
+        options={{
+          headerTitleStyle: {
+            fontSize: 20,
+          },
+          headerTitle: 'Scanner',
           headerTitleAlign: 'center',
         }}/>
 

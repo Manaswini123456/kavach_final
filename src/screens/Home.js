@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,7 +8,16 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useNavigation } from '@react-navigation/native'
-import Loader from "./Loader";
+import Loader from "./Loader";  
+// import Expo,{Constants} from 'expo'; 
+import * as Notifications from 'expo-notifications'; 
+import * as Permissions from 'expo-permissions'; 
+import { AppRegistry } from 'react-native'
+import RNAndroidNotificationListener, { RNAndroidNotificationListenerHeadlessJsName } from 'react-native-android-notification-listener'; 
+
+
+
+
 
 import Menu from "../component/Menu";
 import { getAuth, signOut } from "firebase/auth"; // Import the necessary Firebase functions for authentication
@@ -18,7 +27,23 @@ import FloatingAIButton from "./Homescreen/ChatbotIcon";
 import Chatbot from "./Chatbot";
 import HowToPreventCybercrime from "./Homescreen/Information2";
 import FloatingMenu from "./Homescreen/Botmenu";
-const Home = (props) => {
+const Home = (props) => { 
+
+
+
+  // async function register() {
+  //   alert("hi");
+  //   const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS); 
+  //   alert(status);
+  //   if (status !== 'granted') {
+  //     alert('Notification permissions were not granted.');
+  //     return;
+  //   }  
+  // console.log("working start");
+  // const token = await Notifications.getExpoPushTokenAsync(); 
+  //  console.log(status,token);  
+  //  console.log("working end");
+  // }
   const navigation = useNavigation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -28,7 +53,32 @@ const Home = (props) => {
 
   const handleCloseMenu = () => {
     setIsMenuOpen(false);
-  };
+  };   
+
+  // const sendSMS = async () => {
+  //   const isAvailable = await SMS.isAvailableAsync();
+
+  //   if (isAvailable) {
+  //     const { result } = await SMS.sendSMSAsync(['recipientPhoneNumber'], 'Hello from Expo!');
+  //     console.log(result);
+  //   }
+  // }; 
+
+  // sendSMS();  
+ 
+
+
+  // async function register() {
+  //   const status = await RNAndroidNotificationListener.getPermissionStatus();
+  //   alert(status)  
+  // }  
+
+  // register(); 
+
+
+  // const get = RNAndroidNotificationListener.requestPermission()
+  
+
 
   const description =
     "Cybercrime is any criminal activity that involves a computer, networked device or a network. While most cybercrimes are carried out in order to generate profit for the cybercriminals, some cybercrimes are carried out against computers or devices directly to damage or disable them.";
@@ -48,13 +98,32 @@ const Home = (props) => {
   const navigateToAnotherPage = () => {
     // Replace 'AnotherPage' with the actual name of the destination page in your navigation stack
     navigation.navigate(Chatbot);
-  };
+  }; 
 
+  // register();
+
+  // useEffect(()=>{
+  //   async function requestNotificationPermissions() {
+  //     const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+  //     if (status !== 'granted') {
+  //       console.error('Notification permissions were not granted.');
+  //     }
+  //   }
+  //   requestNotificationPermissions();
+
+  //   const listener = Notifications.addNotificationReceivedListener(handleNotification);
+  //   return () => listener.remove();
+  // },[]) 
+
+  // function handleNotification(notification) {
+  //   console.log('Received notification:', notification);
+  //   // Handle the notification here
+  // }
 
   return (
     <View style={styles.maincontainer}>
       {/* <FloatingAIButton onPress={navigateToAnotherPage}></FloatingAIButton> */}
-<FloatingMenu></FloatingMenu>
+     <FloatingMenu></FloatingMenu>
 
       
       <ScrollView style={styles.scroll}>

@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     paddingBottom:10,
     position:"relative",
     width:"100%",
-    top:300
+    top:650
   },
   heading: {
     fontSize: 28,
